@@ -1,0 +1,72 @@
+/* Variables globales */
+@import url("https://fonts.googleapis.com/css2?family=Bungee&family=Wallpoet&display=swap");
+
+:root {
+  --font-main: "Bungee", sans-serif;
+  --font-secondary: "Wallpoet", sans-serif;
+
+  /* Paleta de colores */
+  --color-primary: #e91e63;
+  --color-primary-dark: #d81b3a;
+  --accent-color: #ff0055;
+  --accent-alt: #00ffcc;
+  --color-text: #333;
+  --color-border: #ccc;
+  --color-white: #fff;
+
+  --background: #0d0d0d;
+  --foreground: #f4f4f4;
+
+  /* Espaciado */
+  --space-xs: 0.5rem;
+  --space-sm: 1rem;
+  --space-md: 2rem;
+  --space-lg: 4rem;
+
+  /* Bordes y radios */
+  --radius: 8px;
+
+  /* Tipografía */
+  --font-size-base: 16px;
+  --font-size-lg: 18px;
+  --font-size-xl: 24px;
+}
+
+/* Reset básico y tipografía global */
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+html {
+  height: 100vh;
+}
+body {
+  max-width: 100%;
+  
+
+  font-family: var(--font-main);
+  background-color: #0d0d0d;
+  color: var(--color-primary-dark);
+  font-size: var(--font-size-base);
+  line-height: 1.6;
+  
+}
+
+/* Botón base */
+button {
+  font-family: inherit;
+  font-size: var(--font-size-base);
+  border: none;
+  cursor: pointer;
+}
+
+/* Imágenes responsivas */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
