@@ -1,0 +1,19 @@
+.mapContainer {
+  text-align: center;
+  padding: 2rem;
+  background-color: #1a1a1a;
+}
+
+.title {
+  color: #fff;
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+}
+
+.map {
+  width: 100%;
+  max-width: 800px;
+  height: 400px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+}

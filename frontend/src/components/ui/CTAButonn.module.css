@@ -1,0 +1,77 @@
+.btn {
+  font-family: var(--font-secondary);
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  border-radius: var(--radius);
+  transition: all 0.25s ease-in-out;
+  
+  display: flex;
+  
+  justify-content: center;
+  margin: 2rem auto 3rem;
+}
+
+/* ===== Variantes ===== */
+.primary {
+  background: linear-gradient(
+    135deg,
+    var(--color-primary-dark),
+    var(--accent-color)
+  );
+  color: var(--color-white);
+  box-shadow: 0 0 12px rgba(233, 30, 99, 0.6);
+}
+
+.primary:hover {
+  transform: scale(1.05) translateY(-2px);
+  box-shadow: 0 0 20px rgba(233, 30, 99, 0.9),
+              0 0 10px var(--accent-alt);
+}
+
+.secondary {
+  background: transparent;
+  border: 2px solid var(--accent-alt);
+  color: var(--accent-alt);
+}
+
+.secondary:hover {
+  background: rgba(0, 255, 204, 0.15);
+  transform: scale(1.05);
+  box-shadow: 0 0 10px var(--accent-alt);
+}
+
+/* ===== Tamaños ===== */
+.sm {
+  padding: var(--space-xs) var(--space-sm);
+  font-size: 0.9rem;
+}
+
+.md {
+  padding: var(--space-sm) var(--space-md);
+  font-size: 1.5rem;
+}
+
+.lg {
+  padding: var(--space-md) var(--space-lg);
+  font-size: 1.2rem;
+}
+
+/* ===== Responsivo ===== */
+@media (max-width: 768px) {
+  .lg {
+    font-size: 1rem;
+    padding: var(--space-sm) var(--space-md);
+  }
+  .md {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .btn {
+    width: 100%;
+    font-size: 0.95rem;
+    padding: var(--space-sm);
+  }
+}

@@ -1,0 +1,283 @@
+/* .navbar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: transparent;
+  width: 100%;
+  position: relative;
+  z-index: 10;
+}
+
+.logo img {
+  height: 100px;
+  border-radius: 50%;
+}
+
+.hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 30px;
+  height: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 1001;
+  padding: 0;
+  transition: all 0.3s ease;
+}
+
+.bar {
+  height: 3px;
+  width: 100%;
+  background-color: #fff;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+  transform-origin: center;
+}
+
+
+.hamburger.open .bar:nth-child(1) {
+  transform: translateY(10px) rotate(45deg);
+}
+
+.hamburger.open .bar:nth-child(2) {
+  opacity: 0;
+  transform: scaleX(0);
+}
+
+.hamburger.open .bar:nth-child(3) {
+  transform: translateY(-10px) rotate(-45deg);
+}
+
+.links {
+  display: flex;
+  padding: 1rem;
+  gap: 2rem;
+  list-style: none;
+}
+
+.links li a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: bold;
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+
+.links li a::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  background-color: #e60073;
+  left: 0;
+  bottom: -4px;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+
+.links li a:hover::after,
+.active::after {
+  transform: scaleX(1);
+}
+
+.active {
+  color: #e60073;
+}
+
+
+@media (max-width: 768px) {
+  .logoBg {
+  height: 4rem;
+  border-radius: 50%;
+}
+  .hamburger {
+    display: flex;
+  }
+
+  .links {
+    flex-direction: column;
+    align-items: flex-end;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 100%;
+    background-color: #111;
+    padding: 2.3rem 2rem;
+    display: none;
+  }
+   .menuContainer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 15;
+  padding-top: 120px; 
+}
+
+.links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  align-items: center;
+}
+
+.links li a {
+  color: white;
+  font-size: 1.5rem;
+  text-decoration: none;
+  position: relative;
+  padding: 0.5rem;
+}
+
+  .showMenu {
+    display: flex;
+  }
+
+  .links li {
+    margin: 1rem 0;
+  }
+}
+ */
+ .navbar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: transparent;
+  width: 100%;
+  position: relative;
+  z-index: 10;
+}
+
+.logo img {
+  height: 100px;
+  border-radius: 50%;
+}
+
+.hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 30px;
+  height: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 1001;
+  padding: 0;
+  transition: all 0.3s ease;
+}
+
+.bar {
+  height: 3px;
+  width: 100%;
+  background-color: #fff;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+  transform-origin: center;
+}
+
+/* Transformación a cruz */
+.hamburger.open .bar:nth-child(1) {
+  transform: translateY(10px) rotate(45deg);
+}
+
+.hamburger.open .bar:nth-child(2) {
+  opacity: 0;
+  transform: scaleX(0);
+}
+
+.hamburger.open .bar:nth-child(3) {
+  transform: translateY(-10px) rotate(-45deg);
+}
+
+.links {
+  display: flex;
+  padding: 1rem;
+  gap: 2rem;
+  list-style: none;
+}
+
+.links li a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: bold;
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+/* Subrayado animado */
+.links li a::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  background-color: #e60073;
+  left: 0;
+  bottom: -4px;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+
+.links li a:hover::after,
+.active::after {
+  transform: scaleX(1);
+}
+
+.active {
+  color: #e60073;
+}
+
+/* Mobile styles */
+@media (max-width: 768px) {
+  .logo img {
+    height: 4rem;
+  }
+  
+  .hamburger {
+    display: flex;
+  }
+
+  .links {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.95);
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    padding: 2rem;
+    opacity: 0;
+    transform: translateY(-100%);
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+    z-index: 999;
+  }
+
+  .links.showMenu {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  .links li a {
+    font-size: 1.5rem;
+  }
+}

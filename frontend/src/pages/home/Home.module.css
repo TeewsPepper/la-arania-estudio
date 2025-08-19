@@ -1,0 +1,48 @@
+
+
+.backgroundLogo {
+  position: fixed; /* Cambiado a fixed para mejor comportamiento en mobile */
+  width: 150%; /* Mayor ancho para asegurar cobertura */
+  height: auto;
+  max-width: 1200px;
+  min-width: 300px;
+  opacity: 0.05;
+  z-index: 1;
+  user-select: none;
+  pointer-events: none;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+
+
+
+/* Botón base */
+/* button {
+  font-family: inherit;
+  font-size: var(--font-size-base);
+  border: none;
+  cursor: pointer;
+} */
+
+
+/* Media queries para ajustes específicos */
+@media (max-width: 768px) {
+  .backgroundLogo {
+    width: 180%; /* Más ancho en mobile para evitar bordes vacíos */
+    min-width: 100%;
+    max-width: none;
+  }
+  
+  .container {
+    min-height: 100vh; /* Mejor soporte para mobile browsers */
+  }
+}
+
+@media (orientation: portrait) {
+  .backgroundLogo {
+    width: 120%;
+    height: auto;
+  }
+}
