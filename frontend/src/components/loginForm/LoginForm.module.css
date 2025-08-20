@@ -63,6 +63,26 @@
 .button:hover {
   background-color: var(--accent-primary);
 }
+.redirectText {
+  margin-top: 1rem;
+  margin-bottom: 3rem;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #777;
+}
+
+.link {
+  color: var(--color-primary-dark);
+  font-weight: bold;
+  text-decoration: none;
+  margin-left: 0.3rem;
+  transition: color 0.3s ease, text-decoration 0.3s ease;
+}
+
+.link:hover {
+  color: var(--color-primary);
+  text-decoration: underline;
+}
 
 @media (max-width: 768px) {
   .title {
@@ -75,11 +95,9 @@
 /* Media query para pantallas pequeñas */
 @media (max-width: 480px) {
   .title {
-    font-size: 1.2rem;
+    font-size: 1.rem;
     margin-bottom: 1.5rem;
   }
 
-  .form {
-    padding: 0 0.5rem;
-  }
+ 
 }

@@ -1,7 +1,10 @@
 .mapContainer {
+  width: 90%;
+  border-radius: 12px;
   text-align: center;
   padding: 2rem;
   background-color: #1a1a1a;
+  margin-bottom: 1.5rem;
 }
 
 .title {
@@ -12,8 +15,14 @@
 
 .map {
   width: 100%;
-  max-width: 800px;
-  height: 400px;
+  max-width: 500px;
+  height: 200px;
   border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+}
+@media (max-width: 480px) {
+  .title {
+    
+    font-size: 1rem;
+  }
 }

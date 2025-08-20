@@ -19,8 +19,8 @@ const Layout: React.FC = () => {
       <Navbar />
       
       <main>{<Outlet/>}</main>
-      <MapSection/>
       <SocialNavbar />
+      <MapSection/>
       <Footer />
     </div>
   );

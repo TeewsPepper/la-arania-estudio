@@ -14,7 +14,7 @@ const ServicesSlider = () => {
     {
       id: 1,
       title: 'Grabaciones',
-      description: 'No dejes que la música se te escape'
+      description: '16 Tracks, Microfonía profesional y un técnico a tu disposición '
     },
     {
       id: 2,

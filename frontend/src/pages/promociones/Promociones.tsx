@@ -99,7 +99,7 @@ export default function Promociones() {
         className={styles.promocionesWrapper}
       >
         <motion.h2 className={styles.sectionTitle} variants={titleVariants}>
-          multiplicá tu tiempo para tocar
+          Más tiempo para tocar
         </motion.h2>
 
         <motion.div

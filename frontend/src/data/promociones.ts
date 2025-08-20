@@ -21,7 +21,7 @@ export const promociones = [
   },
   {
     id: "2",
-    title: "RECOMENDÁ Y GANAMOS TODOS",
+    title: "RECOMENDANOS Y GANAMOS TODOS",
     description: "Presentá un amigo y ambos ganan",
     condiciones: `🤝 **Traé a tu banda/amigo:**
 1. Decile que te mencione al registrarse

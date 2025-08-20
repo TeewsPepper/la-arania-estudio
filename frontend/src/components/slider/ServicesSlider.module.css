@@ -12,6 +12,7 @@
 
 .slide {
   width: 100%;
+  height: 30vh;
   padding: var(--space-sm);
   text-align: center;
   will-change: transform, opacity, filter;

@@ -2,7 +2,7 @@
 
 
 import { motion } from "framer-motion";
-import RegistroForm from "../../components/registroForm/RegistroForm";
+import LoginForm from "../../components/loginForm/LoginForm";
 import styles from "./Login.module.css";
 
 const Login = () => {
@@ -15,7 +15,7 @@ const Login = () => {
       className={styles.loginContainer}
     >
       <main>
-        <RegistroForm />
+        <LoginForm />
       </main>
     </motion.div>
   );
