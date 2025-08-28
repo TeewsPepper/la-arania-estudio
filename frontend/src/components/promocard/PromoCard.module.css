@@ -62,9 +62,10 @@
     background: transparent;
     border: 2px solid var(--color-primary-dark);
     border-radius: var(--radius);
-    padding: var(--space-sm);
+    padding: -5;
     transition: transform 0.3s, box-shadow 0.3s;
     height: 25vh;
+    width: 100%;
   }
 
   .promoCard:hover {
@@ -75,7 +76,7 @@
   .cardTitle {
     font-family: var(--font-secondary);
     color: var(--color-white);
-    font-size: 1.1rem;
+    font-size: 1rem;
     margin-bottom: var(--space-sm);
     text-transform: uppercase;
   }

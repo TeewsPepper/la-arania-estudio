@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { sanitizeRegisterForm, ValidationError } from "../../utils/sanitize"; 
 import styles from "./RegistroForm.module.css";
 
 interface FormData {
@@ -18,48 +19,36 @@ export default function RegistroForm() {
   });
 
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
-
   const navigate = useNavigate();
-  const location = useLocation();
-  const from = location.state?.from || "/";
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-
-  const validate = (): boolean => {
-    const newErrors: { [key: string]: string } = {};
-
-    if (!formData.nombre.trim()) newErrors.nombre = "El nombre es obligatorio";
-    if (!formData.email) newErrors.email = "El email es obligatorio";
-    else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = "Email inválido";
-
-    if (!formData.password) newErrors.password = "La contraseña es obligatoria";
-    else if (formData.password.length < 6)
-      newErrors.password = "Debe tener al menos 6 caracteres";
-
-    if (formData.confirmPassword !== formData.password)
-      newErrors.confirmPassword = "Las contraseñas no coinciden";
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!validate()) return;
+    setErrors({});
 
-    console.log("Formulario válido ✅", formData);
+    try {
+      // 👇 Sanitización y validación
+      sanitizeRegisterForm(formData);
+      console.log("Registro exitoso:", formData);
+      
 
-    // Aquí iría la llamada real al backend
-    localStorage.setItem("isAuthenticated", "true");
-    navigate(from, { replace: true });
+      // Redirige al login con mensaje de registro exitoso
+      navigate("/login", { replace: true, state: { registered: true } });
+    } catch (err) {
+      if (err instanceof ValidationError) {
+        setErrors({ general: err.message });
+      } else {
+        setErrors({ general: "Ocurrió un error al registrarse." });
+      }
+    }
   };
 
   return (
-    <section className={styles.registroForm}>
+     <section className={styles.registroForm}>
       <h2 className={styles.title}>Crea una Cuenta</h2>
-      <form className={styles.form} onSubmit={handleSubmit}>
+      <form className={styles.form} onSubmit={handleSubmit} noValidate>
         <label className={styles.label}>
           Nombre:
           <input
@@ -68,6 +57,7 @@ export default function RegistroForm() {
             value={formData.nombre}
             onChange={handleChange}
             className={`${styles.input} ${errors.nombre ? styles.errorInput : ""}`}
+            maxLength={60}
             required
           />
           {errors.nombre && <span className={styles.error}>{errors.nombre}</span>}
@@ -80,7 +70,8 @@ export default function RegistroForm() {
             name="email"
             value={formData.email}
             onChange={handleChange}
-            className={`${styles.input} ${errors.nombre ? styles.errorInput : ""}`}
+            className={`${styles.input} ${errors.email ? styles.errorInput : ""}`}
+            maxLength={120}
             required
           />
           {errors.email && <span className={styles.error}>{errors.email}</span>}
@@ -93,7 +84,8 @@ export default function RegistroForm() {
             name="password"
             value={formData.password}
             onChange={handleChange}
-            className={`${styles.input} ${errors.nombre ? styles.errorInput : ""}`}
+            className={`${styles.input} ${errors.password ? styles.errorInput : ""}`}
+            minLength={6}
             required
           />
           {errors.password && <span className={styles.error}>{errors.password}</span>}
@@ -106,7 +98,7 @@ export default function RegistroForm() {
             name="confirmPassword"
             value={formData.confirmPassword}
             onChange={handleChange}
-            className={`${styles.input} ${errors.nombre ? styles.errorInput : ""}`}
+            className={`${styles.input} ${errors.confirmPassword ? styles.errorInput : ""}`}
             required
           />
           {errors.confirmPassword && (
@@ -118,6 +110,8 @@ export default function RegistroForm() {
           Registrarse
         </button>
       </form>
+
+      {errors.general && <p className={styles.error}>{errors.general}</p>}
 
       <p className={styles.redirectText}>
         ¿Ya tienes cuenta?{" "}

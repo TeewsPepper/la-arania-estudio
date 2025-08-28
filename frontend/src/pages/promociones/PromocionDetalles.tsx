@@ -19,7 +19,7 @@ export default function PromotionDetalles() {
       
       <section className={styles.conditions}>
         <h2>Condiciones:</h2>
-        <p>{promo.condiciones}</p>
+        <p className={styles.condiciones}>{promo.condiciones}</p>
         {/* Lista opcional para condiciones complejas */}
         {/* <ul>
           <li>Válido hasta agotar existencias</li>

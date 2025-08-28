@@ -1,0 +1,32 @@
+.card {
+  background: transparent;
+  border-radius: 12px;
+  padding: 1rem;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+.card h3,
+p {
+  color: var(--foreground);
+  font-family: var(--font-secondary);
+  font-size: 2rem;
+}
+
+.horas {
+  margin: 1rem 0;
+  font-weight: bold;
+}
+
+@media (max-width: 768px) {
+  .card {
+    padding: 0;
+  }
+  .card h3,
+  p {
+    font-size: 1rem;
+  }
+
+  .horas {
+    font-weight: bold;
+  }
+}

@@ -5,34 +5,37 @@ export const promociones = [
     id: "1",
     title: "Una hora gratis al instante",
     description: "Reservá y ganá automáticamente",
-    condiciones: `🎉 **¡Felicitaciones!** Ya estás participando.
+    condiciones: `🎉Ya podés participar!
 
 ✓ Reservá 2+ horas
 ✓ Vení a ensayar/grabar
 ✓ Pagá tu consumo
 
-✨ **Recibís:** 1 hora gratis para usar al instante o acumular
+✨ **Recibís:** 1 hora gratis para usar al instante o acumular.
 
-⚠️ **Condiciones:**
-• Uso de 1 hora por reserva
-• Mínimo 2 horas por ensayo
-• Promoción por tiempo limitado`,
+⚠️ **Importante!**
+
+• No transferibles ni acumulables con otras promociones.
+• Requiere registro previo.
+• Uso máximo de 1 hora gratis por reserva.
+• Ensayo mínimo 2 hs.
+• Promoción válida por tiempo limitado`,
     icon: "🎸" // Puedes usar emojis o íconos
   },
   {
     id: "2",
     title: "RECOMENDANOS Y GANAMOS TODOS",
     description: "Presentá un amigo y ambos ganan",
-    condiciones: `🤝 **Traé a tu banda/amigo:**
-1. Decile que te mencione al registrarse
-2. Que complete su primer ensayo (2+ horas)
+    condiciones: `🤝 Traé a tu banda/amigo:
+1. Decile que te mencione al registrarse.
+2. Que abone su primer ensayo (2+ horas).
 3. ¡Ambos ganan 1 hora gratis!
 
-💎 **Beneficio:** Acumulable (1 por reserva)
 
-📌 **Importante:**
-• No transferible
-• Requiere registro previo`,
+📌 **Importante!**
+• No transferibles ni acumulables con otras promociones.
+• Requiere registro previo.
+• Promoción válida por tiempo limitado`,
     icon: "👥"
   },
   {
@@ -45,9 +48,9 @@ export const promociones = [
 
 🧑‍🤝‍🧑 **Para grupos de 2-6 personas**
 
-❤️ **Destino:** Olla barrial del barrio
+❤️ **Destino:** A definir.
 
-⏳ **Válido:** Hasta [fecha límite]`,
+⏳ **Válido desde:** [Próximamente] Hasta [fecha límite]`,
     icon: "❤️"
   }
 ];
