@@ -39,15 +39,25 @@
 }
 @media (max-width: 768px) {
   .card{
-  
+  display: flex;
+  flex-direction: column;
   padding: 0;
 }
 .card span{
   font-size: .7rem;
-  
 }
+.item {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+  
 .cancel {
   font-size: .6rem;
   padding: .5rem;
+}
+.btnPago {
+  padding: .7rem;
+  margin-top: .5rem;
 }
 }

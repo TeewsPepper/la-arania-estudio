@@ -1,69 +1,64 @@
-# React + TypeScript + Vite
+# La Araña Estudio / Sala - Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Descripción
+Aplicación web para un estudio de grabación y sala de ensayo musical. Permite:  
+- Registro e inicio de sesión de usuarios.  
+- Acceso a promociones y servicios.  
+- Dashboard de administrador para gestionar reservas.  
+- Diseño underground/punk/indie con React, Vite y CSS Modules.  
+- Validación y sanitización de formularios en tiempo real.
 
-Currently, two official plugins are available:
+## Tecnologías
+- **Frontend:** React 19.1, TypeScript, Vite, CSS Modules, Framer Motion  
+- **Routing:** React Router DOM  
+- **Autenticación:** Context + Google OAuth (preparado para backend)  
+- **Validación:** Funciones personalizadas de sanitización (`src/utils/sanitize.ts`)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-## Expanding the ESLint configuration
+## Funcionalidades principales
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Registro y Login
+- Registro con validación en tiempo real de nombre, email y contraseñas.  
+- Sanitización de todas las entradas para evitar inyección de código.  
+- Redirección al login con mensaje de éxito tras registro.  
+- Login con rol `user` o `admin` para controlar accesos.  
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### Navbar y Rutas Protegidas
+- Navbar dinámico: muestra enlaces según rol.  
+- `ProtectedRoute` para páginas de usuario logueado.  
+- `AdminRoute` para el dashboard de administrador.  
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+### Formularios
+- Validación y sanitización en tiempo real.  
+- Mensajes de error visibles solo después de interactuar con cada campo (`touched`).  
+- Botón de envío deshabilitado mientras haya errores.  
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Dashboard Admin
+- Acceso exclusivo para usuarios con rol `admin`.  
+- Interfaz inicial con datos hardcodeados (preparada para integración backend).  
+ 
+
+## Instrucciones para ejecutar
+1. Clonar el repositorio: 
+
+```bash
+
+  git clone <repo-url>
+  cd frontend
+
+```
+2. Instalar dependencias:
+
+```bash
+
+ npm install
+
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+3. Ejecutar en modo desarrollo:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+```bash
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+ npm run dev
+
 ```

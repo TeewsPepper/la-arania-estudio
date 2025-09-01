@@ -1,14 +1,14 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion, useAnimation } from "framer-motion";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useAuth } from "../../hooks/useAuth"; // 👈 usamos el hook
+import { useAuth } from "../../hooks/useAuth";
 import logoBg from "../../assets/images/logo-bg-transparent.png";
 import styles from "./Navbar.module.css";
 
 const Navbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { isAuthenticated, logout, user } = useAuth(); // 👈 más limpio
+  const { user, logout } = useAuth(); // ✅ solo user y logout
   const [menuOpen, setMenuOpen] = useState(false);
   const controls = useAnimation();
 
@@ -20,37 +20,6 @@ const Navbar = () => {
     navigate("/");
   };
 
-  // Animación del logo
-  useEffect(() => {
-    let isMounted = true;
-
-    const animateSpider = async () => {
-      while (isMounted) {
-        await controls.start({
-          y: [0, 150, 300, 450, 300, 150, 0],
-          x: [0, -80, 50, -30, 0],
-          rotate: [0, 5, -5, 3, 0],
-          transition: { duration: 6, ease: "easeInOut" },
-        });
-
-        await controls.start({
-          y: [0, -10, 0],
-          scale: [1, 1.1, 1],
-          transition: { duration: 0.5, times: [0, 0.5, 1] },
-        });
-
-        await new Promise((resolve) => setTimeout(resolve, 5000));
-      }
-    };
-
-    animateSpider();
-
-    return () => {
-      isMounted = false; // corta el bucle cuando el componente se desmonta
-      controls.stop();
-    };
-  }, [controls]);
-
   return (
     <nav className={styles.navbar}>
       <div className={styles.logo}>
@@ -60,11 +29,7 @@ const Navbar = () => {
             alt="Logo La Araña"
             animate={controls}
             initial={{ y: 0, x: 0, rotate: 0 }}
-            style={{
-              position: "relative",
-              zIndex: 20,
-              transformOrigin: "center",
-            }}
+            style={{ position: "relative", zIndex: 20, transformOrigin: "center" }}
           />
         </Link>
       </div>
@@ -92,9 +57,7 @@ const Navbar = () => {
         <li>
           <Link
             to="/promociones"
-            className={
-              location.pathname === "/promociones" ? styles.active : ""
-            }
+            className={location.pathname === "/promociones" ? styles.active : ""}
             onClick={() => setMenuOpen(false)}
           >
             Promociones
@@ -110,27 +73,37 @@ const Navbar = () => {
           </Link>
         </li>
 
-        {isAuthenticated ? (
+        {user ? (
           <>
-            <li>
-              <Link
-                to="/perfil"
-                className={
-                  location.pathname.startsWith("/perfil") ? styles.active : ""
-                }
-                onClick={() => setMenuOpen(false)}
-              >
-                {user?.name ?? "Mi Perfil"}
-              </Link>
-            </li>
+            {user.role === "admin" ? (
+              <li>
+                <Link
+                  to="/admin"
+                  className={location.pathname.startsWith("/admin") ? styles.active : ""}
+                  onClick={() => setMenuOpen(false)}
+                >
+                  Admin
+                </Link>
+              </li>
+            ) : (
+              <li>
+                <Link
+                  to="/perfil"
+                  className={location.pathname.startsWith("/perfil") ? styles.active : ""}
+                  onClick={() => setMenuOpen(false)}
+                >
+                  {user.nombre ?? "Mi Perfil"}
+                </Link>
+              </li>
+            )}
+
             <li>
               <Link
                 to="/"
                 onClick={(e) => {
-                  e.preventDefault(); // evita navegación automática
-                  handleLogout(); // ejecuta logout + navigate("/")
+                  e.preventDefault();
+                  handleLogout();
                 }}
-                className={location.pathname === "/" ? styles.active : ""}
               >
                 Logout
               </Link>

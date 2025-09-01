@@ -42,9 +42,10 @@ export function sanitizePlainText(
 // Valida/sanitiza email
 export function sanitizeEmail(email: string): string {
   const e = sanitizePlainText(email, { maxLength: 120 }).toLowerCase();
-  // Regex simple y práctica para emails comunes
-  const emailRegex =
-    /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
+
+  // Regex práctica para emails reales
+  const emailRegex = /^[a-z0-9._%+-]+@(?:[a-z0-9-]+\.)+[a-z]{2,}$/i;
+
   if (!emailRegex.test(e)) throw new ValidationError("Email inválido.");
   return e;
 }

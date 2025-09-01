@@ -90,6 +90,33 @@
   text-align: center;
   margin-bottom: 1rem;
 }
+.error {
+  color: var(--color-primary-dark);
+}
+.googleButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  padding: 0;            /* quita cualquier padding por defecto */
+  border: none;          /* quita borde por defecto */
+  background: none;      /* o tu color deseado */
+  font: inherit;         /* hereda tipografía del padre */
+  cursor: pointer;
+  margin-top: 1.5rem;
+  margin-bottom: 3rem;
+  height: 40px;          /* altura fija que tú quieras */
+}
+
+.googleLogo {
+  width: 370px; /* ajusta tamaño según tu logo */
+  height: 50px;
+}
+.googleButton:hover {
+  background-color: transparent /* hover solo para este botón */
+}
+
 
 @media (max-width: 768px) {
   .title {

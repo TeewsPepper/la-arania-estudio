@@ -19,17 +19,27 @@ const ServicesSlider = () => {
     {
       id: 2,
       title: 'Ensayos',
-      description: 'Espacio equipado para bandas y artistas'
+      description: 'Espacio equipado para bandas'
     },
     {
       id: 3,
       title: 'Producciones',
-      description: 'Ayuda en la creación y mezcla de tus tracks'
+      description: 'Asesoramiento y producción musical integral'
     },
     {
       id: 4,
-      title: 'Sesiones en Vivo',
+      title: 'Vivo',
       description: 'Grabación de presentaciones en directo'
+    },
+     {
+      id: 5,
+      title: 'Streaming',
+      description: 'Transmisión profesional de eventos en vivo'
+    },
+    {
+      id: 6,
+      title: 'Podcasts',
+      description: 'Equipo para grabar tu podcast con calidad profesional'
     }
   ];
 

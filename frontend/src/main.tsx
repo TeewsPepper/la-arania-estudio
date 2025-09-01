@@ -7,12 +7,15 @@ import { AuthProvider } from './context/AuthContext';
 
 import './index.css' 
 import App from './App.tsx'
+import { ReservasProvider } from './context/ReservaContext.tsx';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter> 
       <AuthProvider>
+        <ReservasProvider>
         <App /> 
+        </ReservasProvider>
       </AuthProvider>
     </BrowserRouter>
   </StrictMode>,

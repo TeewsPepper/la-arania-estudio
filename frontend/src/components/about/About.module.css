@@ -19,7 +19,7 @@
 .aboutText {
   font-family: var(--font-main);
   font-size: (--font-size-lg);
-  line-height: 1.6;
+  line-height: 1.8;
   max-width: 700px;
   margin: 0 auto 3rem;
   color: var(--foreground);
@@ -31,13 +31,14 @@
 @media (max-width: 768px) {
   .aboutSection {
   
-  padding: var(--space-lg) .7rem var(--space-md);
+  padding: var(--space-md) .7rem var(--space-md);
   
 }
   .aboutTitle {
-    font-size: 1.1rem;
+    font-size: 1.5rem;
   }
   .aboutText {
-    font-size:0.8rem
+    font-size:0.8rem;
+    font-weight: lighter;
   }
 }

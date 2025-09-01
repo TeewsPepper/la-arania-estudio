@@ -1,21 +1,26 @@
-import { Navigate, useLocation } from "react-router-dom";
-import { useAuth } from "../hooks/useAuth";  // 🔹 usamos el hook
+// src/routes/ProtectedRoute.tsx
+import type { ReactNode } from "react";
+import { Navigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
 
-interface Props {
-  children: React.ReactNode;
+interface ProtectedRouteProps {
+  children: ReactNode;
+  adminOnly?: boolean; // opcional
 }
 
-export const ProtectedRoute = ({ children }: Props) => {
-  const location = useLocation();
-  const { isAuthenticated } = useAuth();  //  accedemos a auth global
+export function ProtectedRoute({ children, adminOnly = false }: ProtectedRouteProps) {
+  const { user } = useAuth();
 
-  return isAuthenticated ? (
-    <>{children}</>
-  ) : (
-    <Navigate
-      to="/login"
-      replace
-      state={{ from: location }} //  recuerda la ruta que intentaba visitar
-    />
-  );
-};
+  if (!user) {
+    // No autenticado → redirige a login
+    return <Navigate to="/login" replace />;
+  }
+
+  if (adminOnly && user.role !== "admin") {
+    // Usuario no es admin → redirige a perfil
+    return <Navigate to="/perfil" replace />;
+  }
+
+  // Usuario autorizado
+  return <>{children}</>;
+}

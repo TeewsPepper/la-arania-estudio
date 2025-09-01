@@ -1,6 +1,5 @@
-// src/App.tsx
 import { Routes, Route } from "react-router-dom";
-import { ProtectedRoute } from "./routes/ProtectedRoute";
+import { ProtectedRoute } from "./routes/ProtectedRoute"; // ✅ usamos solo ProtectedRoute
 import Home from "./pages/home/Home";
 import Layout from "./components/layout/Layout";
 import Promociones from "./pages/promociones/Promociones";
@@ -12,7 +11,7 @@ import Perfil from "./pages/perfil/Perfil";
 import HorasAcumuladas from "./pages/perfil/HorasAcumuladas";
 import MisReservas from "./pages/perfil/MisReservas";
 import NuevaReserva from "./pages/perfil/NuevaReserva";
-
+import Admin from "./pages/admin/Admin";   // ✅ importamos Admin
 
 import "./globals.module.css";
 
@@ -25,6 +24,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/registro" element={<Registro />} />
         <Route path="/contacto" element={<ContactForm />} />
+        
         <Route
           path="/promocion-detalles/:id"
           element={
@@ -33,39 +33,49 @@ function App() {
             </ProtectedRoute>
           }
         />
+
         <Route
-      path="/perfil"
-      element={
-        <ProtectedRoute>
-          <Perfil />
-        </ProtectedRoute>
-      }
-    />
-    <Route
-      path="/perfil/horas"
-      element={
-        <ProtectedRoute>
-          <HorasAcumuladas />
-        </ProtectedRoute>
-      }
-    />
-    <Route
-  path="/perfil/nueva-reserva"
-  element={
-    <ProtectedRoute>
-      <NuevaReserva />
-    </ProtectedRoute>
-  }
-/>
-    <Route
-      path="/perfil/reservas"
-      element={
-        <ProtectedRoute>
-          <MisReservas />
-        </ProtectedRoute>
-      }
-    />
-    
+          path="/perfil"
+          element={
+            <ProtectedRoute>
+              <Perfil />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/perfil/horas"
+          element={
+            <ProtectedRoute>
+              <HorasAcumuladas />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/perfil/nueva-reserva"
+          element={
+            <ProtectedRoute>
+              <NuevaReserva />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/perfil/reservas"
+          element={
+            <ProtectedRoute>
+              <MisReservas />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* ✅ Ruta solo para admins usando ProtectedRoute con adminOnly */}
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute adminOnly>
+              <Admin />
+            </ProtectedRoute>
+          }
+        />
       </Route>
     </Routes>
   );

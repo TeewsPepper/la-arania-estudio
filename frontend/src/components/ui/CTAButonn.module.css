@@ -70,8 +70,9 @@
 
 @media (max-width: 480px) {
   .btn {
-    width: 100%;
+    width: 95%;
     font-size: 0.95rem;
     padding: var(--space-sm);
+    margin: 2rem auto 0;
   }
 }

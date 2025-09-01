@@ -12,7 +12,11 @@
 
 .slide {
   width: 100%;
-  height: 30vh;
+  height: 50vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   padding: var(--space-sm);
   text-align: center;
   will-change: transform, opacity, filter;
@@ -21,7 +25,7 @@
 .serviceTitle {
   font-family: var(--font-secondary);
   color: var(--accent-color);
-  font-size: var(--font-size-xxl);
+  font-size: 3rem;
   margin-bottom: var(--space-sm);
   text-transform: uppercase;
   line-height: 1.2;
@@ -30,7 +34,7 @@
 .serviceDescription {
   font-family: var(--font-main);
   color: var(--foreground);
-  font-size: var(--font-size-lg);
+  font-size: 1.5rem;
   margin-top: var(--space-sm);
 }
 
@@ -59,7 +63,36 @@
 }
 
 /* Efectos responsivos */
+
+@media (max-width: 768px) {
+.serviceTitle {
+  
+  font-size: 2rem;
+  
+    .slide {
+  
+  height: 30vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.1rem;
+  }
+  
+}
+
+}
 @media (max-width: 380px) {
+
+  .slide {
+  
+  height: 30vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  
+  }
   .serviceTitle {
     font-size: 1.1rem;
   }

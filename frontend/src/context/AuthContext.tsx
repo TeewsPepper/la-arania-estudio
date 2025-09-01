@@ -1,64 +1,64 @@
-import { createContext, useState } from "react";
+import { createContext, useContext, useState } from "react";
 import type { ReactNode } from "react";
 
-export interface Reserva {
-  id: number;
-  fecha: string;
-  horaInicio: string; // formato "HH:mm"
-  horaFin: string;
-}
 
-interface User {
+
+export interface User {
   id: string;
+  nombre: string;
   email: string;
-  name?: string;
+  role: "user" | "admin";
 }
 
 interface AuthContextType {
-  user: User | null;
-  isAuthenticated: boolean;
-  reservas: Reserva[];
-  login: (user: User) => void;
+  user?: User;
+  fetchUser: () => Promise<User | undefined>;
   logout: () => void;
-  addReserva: (reserva: Reserva) => void;
-  removeReserva: (id: number) => void;
 }
 
-export const AuthContext = createContext<AuthContextType | undefined>(
-  undefined
-);
+export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [reservas, setReservas] = useState<Reserva[]>([]);
+  const [user, setUser] = useState<User>();
 
-  const login = (newUser: User) => setUser(newUser);
-  const logout = () => {
-    setUser(null);
-    setReservas([]);
+  // ✅ Traer usuario desde backend
+  const fetchUser = async (): Promise<User | undefined> => {
+    try {
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/auth/me`, {
+        credentials: "include",
+      });
+      if (!res.ok) return undefined;
+      const data = await res.json();
+      setUser(data);
+      return data;
+    } catch (err) {
+      console.error("Error al obtener usuario:", err);
+      return undefined;
+    }
   };
 
-  const addReserva = (reserva: Reserva) => {
-    setReservas((prev) => [...prev, reserva]);
-  };
-
-  const removeReserva = (id: number) => {
-    setReservas((prev) => prev.filter((r) => r.id !== id));
+  // ✅ Logout
+  const logout = async () => {
+    try {
+      await fetch(`${import.meta.env.VITE_BACKEND_URL}/auth/logout`, {
+        credentials: "include",
+      });
+    } catch (err) {
+      console.error("Error al cerrar sesión:", err);
+    }
+    setUser(undefined);
   };
 
   return (
-    <AuthContext.Provider
-      value={{
-        user,
-        isAuthenticated: !!user,
-        reservas,
-        login,
-        logout,
-        addReserva,
-        removeReserva,
-      }}
-    >
+    <AuthContext.Provider value={{ user, fetchUser, logout }}>
       {children}
     </AuthContext.Provider>
   );
+};
+
+// ✅ Hook para usar contexto
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) throw new Error("useAuth debe usarse dentro de un AuthProvider");
+  return context;
 };
