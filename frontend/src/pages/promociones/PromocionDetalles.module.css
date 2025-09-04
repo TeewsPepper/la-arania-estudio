@@ -1,4 +1,4 @@
-/* PromotionDetail.module.css */
+
 .detailContainer {
   max-width: 1200px;
   margin: 0 auto;
@@ -37,13 +37,7 @@
   white-space: pre-line;
 }
 
-/* Efecto neon para títulos */
-/* .neonText {
-  text-shadow: 
-    0 0 5px var(--accent-alt),
-    0 0 10px var(--accent-alt),
-    0 0 20px var(--accent-alt);
-} */
+
 
 /* Responsive para móviles */
 @media (max-width: 768px) {

@@ -1,4 +1,4 @@
-// src/components/layout/SocialNavbar.tsx
+
 import { FaFacebookF, FaInstagram, FaYoutube } from "react-icons/fa";
 import styles from "./SocialNavbar.module.css";
 

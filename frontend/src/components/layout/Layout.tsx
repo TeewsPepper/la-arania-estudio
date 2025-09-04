@@ -1,4 +1,4 @@
-// components/Layout.tsx
+
 import styles from'./Layout.module.css'
 import logoBg from '../../assets/images/logo-bg-transparent.png';
 import { Outlet } from "react-router-dom"

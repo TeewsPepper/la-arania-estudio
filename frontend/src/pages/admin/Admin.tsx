@@ -1,81 +1,77 @@
-import { useEffect, useState } from "react";
+
+import { useEffect } from "react";
 import { toast } from "react-toastify";
+import { useReservas } from "../../hooks/useReservas";
 import styles from "./Admin.module.css";
 
-interface Reserva {
-  id: string;
-  usuario: string;
-  fecha: string;
-  hora: string;
-  pagoConfirmado: boolean;
-}
-
 export default function Admin() {
-  const [reservas, setReservas] = useState<Reserva[]>([]);
+  const { reservas, fetchReservasAdmin, marcarPagada,  sumarHoras } = useReservas();
 
   useEffect(() => {
-    // Simulación de fetch de reservas (después conectamos al backend real)
-    const fakeData: Reserva[] = [
-      { id: "1", usuario: "Juan Pérez", fecha: "01-09-2025", hora: "10:00", pagoConfirmado: false },
-      { id: "2", usuario: "Ana García", fecha: "02-09-2025", hora: "12:00", pagoConfirmado: true },
-    ];
-    setReservas(fakeData);
+    fetchReservasAdmin(); // cargar reservas reales al montar
   }, []);
 
-  const handleConfirmarPago = (id: string) => {
-    setReservas((prev) =>
-      prev.map((r) =>
-        r.id === id ? { ...r, pagoConfirmado: true } : r
-      )
-    );
-    toast.success("✅ Pago confirmado", { className: "toast-center" });
-  };
+  const handleConfirmarPago = async (id: string) => {
+  try {
+    const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/admin/reservations/${id}/status`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ status: "confirmed" }),
+    });
+
+    if (!res.ok) throw new Error("No se pudo actualizar la reserva");
+    await res.json();
+
+    marcarPagada(id); 
+    sumarHoras(1);    
+    toast.success("✅ Pago confirmado");
+  } catch (err) {
+    console.error(err);
+    toast.error("⚠️ Error al confirmar el pago");
+  }
+};
 
   return (
-    <div className={styles.admin}>
-      <h1 className={styles.title}>Panel de Administración</h1>
+    <div className={styles.adminContainer}>
+      <h1>Panel de Administración</h1>
+      <button onClick={fetchReservasAdmin}>Actualizar</button>
 
-      {reservas.length === 0 ? (
-        <p className={styles.empty}>No hay reservas registradas</p>
-      ) : (
-        <table className={styles.table}>
-          <thead>
-            <tr>
-              <th>Usuario</th>
-              <th>Fecha</th>
-              <th>Hora</th>
-              <th>Estado de pago</th>
-              <th>Acción</th>
+      <table className={styles.adminTable}>
+        <thead>
+          <tr>
+            <th>Usuario</th>
+            <th>Fecha</th>
+            <th>Hora Inicio</th>
+            <th>Hora Fin</th>
+            <th>Servicio</th>
+            <th>Status</th>
+            <th>Acción</th>
+          </tr>
+        </thead>
+        <tbody>
+          {reservas.map((r) => (
+            <tr key={r._id}>
+              <td>{r.userId.name} ({r.userId.email})</td>
+              <td>{r.fecha}</td>
+              <td>{r.horaInicio}</td>
+              <td>{r.horaFin}</td>
+              <td>{r.servicio}</td>
+              <td>{r.pagada ? "Pagada" : "Pendiente"}</td>
+              <td>
+                {!r.pagada && (
+                  <button
+                    className={styles.btnConfirmar}
+                    onClick={() => handleConfirmarPago(r._id)}
+                  >
+                    Confirmar Pago
+                  </button>
+                )}
+              </td>
             </tr>
-          </thead>
-          <tbody>
-            {reservas.map((reserva) => (
-              <tr key={reserva.id}>
-                <td>{reserva.usuario}</td>
-                <td>{reserva.fecha}</td>
-                <td>{reserva.hora}</td>
-                <td>
-                  {reserva.pagoConfirmado ? (
-                    <span className={styles.confirmado}>Confirmado</span>
-                  ) : (
-                    <span className={styles.pendiente}>Pendiente</span>
-                  )}
-                </td>
-                <td>
-                  {!reserva.pagoConfirmado && (
-                    <button
-                      onClick={() => handleConfirmarPago(reserva.id)}
-                      className={styles.btnConfirmar}
-                    >
-                      Confirmar pago
-                    </button>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }

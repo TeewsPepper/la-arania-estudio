@@ -20,7 +20,7 @@ const About = () => {
       >
         En <span className={styles.span}>La Araña Estudio</span>, 
         asistimos en ensayos, grabaciones y toques en vivo, a una gran cantidad de artistas de nuestra escena musical independiente y profesional en los últimos 30 años. 
-        Somos más que un estudio: somos parte de tu historia. Y no es solo un slogan.
+        Más que un estudio: somos parte de tu historia.
       </motion.p>
     </section>
   );

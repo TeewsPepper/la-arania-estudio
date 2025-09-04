@@ -1,9 +1,10 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { useReserva } from "../../hooks/useReserva";
-import type { Reserva } from "../../context/ReservaContext";
+import { useReservas } from "../../hooks/useReservas";
+import type { Reserva } from "../../types";
 import { isReservaDisponible } from "../../utils/checkReservaDisponible";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -11,14 +12,14 @@ import styles from "./NuevaReserva.module.css";
 import "./CustomDatepicker.css";
 
 export default function NuevaReserva() {
-  const { addReserva, reservas } = useReserva();
+  const { addReserva, reservas } = useReservas();
   const [fecha, setFecha] = useState<Date | null>(null);
   const [horaInicio, setHoraInicio] = useState<Date | null>(null);
   const [horaFin, setHoraFin] = useState<Date | null>(null);
   const navigate = useNavigate();
   const isMobile = window.innerWidth <= 480;
 
-  const handleReserva = (e: React.FormEvent) => {
+  const handleReserva = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!fecha || !horaInicio || !horaFin) {
@@ -26,11 +27,9 @@ export default function NuevaReserva() {
       return;
     }
 
-    // Formatear horas a string "HH:mm"
     const horaInicioStr = `${String(horaInicio.getHours()).padStart(2, '0')}:${String(horaInicio.getMinutes()).padStart(2, '0')}`;
     const horaFinStr = `${String(horaFin.getHours()).padStart(2, '0')}:${String(horaFin.getMinutes()).padStart(2, '0')}`;
 
-    // Validar que horaFin sea posterior a horaInicio
     if (horaFin <= horaInicio) {
       toast.error("⚠️ La hora de fin debe ser posterior a la de inicio");
       return;
@@ -53,32 +52,51 @@ export default function NuevaReserva() {
       return;
     }
 
-    const newReserva: Reserva = {
-      id: reservas.length > 0 ? reservas[reservas.length - 1].id + 1 : 1,
-      fecha: fechaStr,
-      horaInicio: horaInicioStr,
-      horaFin: horaFinStr,
-    };
+    try {
+      // Llamada al backend
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/reservas`, {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          fecha: fechaStr,
+          horaInicio: horaInicioStr,
+          horaFin: horaFinStr,
+          status: 'pending',
+          pagada: false
+        })
+      });
 
-    addReserva(newReserva);
-    toast.success("✅ Reserva creada con éxito!");
-    setTimeout(() => navigate("/perfil"), 2500);
+      if (!res.ok) throw new Error("Error al crear reserva");
+
+      const nuevaReserva: Reserva = await res.json(); // contiene _id generado por Mongo
+      addReserva(nuevaReserva); // se agrega al contexto
+
+      toast.success("✅ Reserva creada con éxito!");
+      setTimeout(() => navigate("/perfil"), 2500);
+
+    } catch (err) {
+      console.error(err);
+      toast.error("⚠️ No se pudo crear la reserva");
+    }
   };
 
-  // Función para crear un objeto Date con la hora actual pero minutos en 0
-  const getCurrentTimeWithZeroMinutes = () => {
+  const getCurrentTimeWithZeroMinutes = (): Date => {
     const now = new Date();
     now.setMinutes(0);
     return now;
   };
 
-  // Función para crear un objeto Date con la hora actual + 1 hora
-  const getCurrentTimePlusOneHour = () => {
+  const getCurrentTimePlusOneHour = (): Date => {
     const now = new Date();
     now.setHours(now.getHours() + 1);
     now.setMinutes(0);
     return now;
   };
+
+  const minDate = new Date();
+  const maxDate = new Date();
+  maxDate.setMonth(maxDate.getMonth() + 3);
 
   return (
     <section className={styles.section}>
@@ -88,14 +106,15 @@ export default function NuevaReserva() {
           Selecciona un día:
           <DatePicker
             selected={fecha}
-            onChange={setFecha}
+            onChange={(date: Date | null) => setFecha(date)}
             dateFormat="dd-MM-yyyy"
             placeholderText="Selecciona una fecha"
             className="customDatepicker"
             autoComplete="off"
-            shouldCloseOnSelect={true}
+            shouldCloseOnSelect
             withPortal={isMobile}
-            minDate={new Date()}
+            minDate={minDate}
+            maxDate={maxDate}
             isClearable
             showYearDropdown
             scrollableYearDropdown
@@ -107,7 +126,7 @@ export default function NuevaReserva() {
           Hora de inicio:
           <DatePicker
             selected={horaInicio}
-            onChange={setHoraInicio}
+            onChange={(date: Date | null) => setHoraInicio(date)}
             showTimeSelect
             showTimeSelectOnly
             timeIntervals={15}
@@ -116,10 +135,10 @@ export default function NuevaReserva() {
             placeholderText="Selecciona hora de inicio"
             className="customDatepicker"
             autoComplete="off"
-            shouldCloseOnSelect={true}
+            shouldCloseOnSelect
             withPortal={isMobile}
             minTime={getCurrentTimeWithZeroMinutes()}
-            maxTime={new Date(new Date().setHours(23, 45, 0))} // 11:45 PM
+            maxTime={new Date(new Date().setHours(23, 45, 0))}
           />
         </label>
 
@@ -127,7 +146,7 @@ export default function NuevaReserva() {
           Hora de finalización:
           <DatePicker
             selected={horaFin}
-            onChange={setHoraFin}
+            onChange={(date: Date | null) => setHoraFin(date)}
             showTimeSelect
             showTimeSelectOnly
             timeIntervals={15}
@@ -136,10 +155,10 @@ export default function NuevaReserva() {
             placeholderText="Selecciona hora de fin"
             className="customDatepicker"
             autoComplete="off"
-            shouldCloseOnSelect={true}
+            shouldCloseOnSelect
             withPortal={isMobile}
             minTime={horaInicio || getCurrentTimePlusOneHour()}
-            maxTime={new Date(new Date().setHours(23, 45, 0))} // 11:45 PM
+            maxTime={new Date(new Date().setHours(23, 45, 0))}
           />
         </label>
 

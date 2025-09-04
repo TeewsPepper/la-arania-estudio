@@ -1,4 +1,4 @@
-import type { Reserva } from "../context/ReservaContext";
+import type { Reserva } from "../context/ReservasContext";
 
 export function isReservaDisponible(
   reservas: Reserva[],

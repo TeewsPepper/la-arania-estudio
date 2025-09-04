@@ -1,5 +1,5 @@
 import { Routes, Route } from "react-router-dom";
-import { ProtectedRoute } from "./routes/ProtectedRoute"; // ✅ usamos solo ProtectedRoute
+import { ProtectedRoute } from "./routes/ProtectedRoute"; 
 import Home from "./pages/home/Home";
 import Layout from "./components/layout/Layout";
 import Promociones from "./pages/promociones/Promociones";
@@ -11,7 +11,7 @@ import Perfil from "./pages/perfil/Perfil";
 import HorasAcumuladas from "./pages/perfil/HorasAcumuladas";
 import MisReservas from "./pages/perfil/MisReservas";
 import NuevaReserva from "./pages/perfil/NuevaReserva";
-import Admin from "./pages/admin/Admin";   // ✅ importamos Admin
+import Admin from "./pages/admin/Admin";   
 
 import "./globals.module.css";
 
@@ -67,11 +67,11 @@ function App() {
           }
         />
 
-        {/* ✅ Ruta solo para admins usando ProtectedRoute con adminOnly */}
+        
         <Route
           path="/admin"
           element={
-            <ProtectedRoute adminOnly>
+            <ProtectedRoute>
               <Admin />
             </ProtectedRoute>
           }

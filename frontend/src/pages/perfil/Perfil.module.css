@@ -49,14 +49,14 @@ label {
   padding: 0.6rem;
   border-radius: 8px;
   border: none;
-  box-sizing: border-box; /* ✅ evita desbordes */
+  box-sizing: border-box; 
 }
 
 .form input {
   background: transparent;
   color: #fff;
-  margin-top: 0.3rem; /* ajusta separación entre label e input */
-  width: 100%; /* ✅ se adapta a mobile */
+  margin-top: 0.3rem; 
+  width: 100%; 
 }
 
 .form button {

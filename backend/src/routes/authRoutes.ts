@@ -1,42 +1,46 @@
-// src/routes/authRoutes.ts
-import { Router } from "express";
-import passport from "passport";
-import { AuthUser } from "../middlewares/authMiddleware";
+import express from "express";
+import passport from "../config/passport";
 
-const router = Router();
+const router = express.Router();
 
-// 👉 Login con Google
+// Ruta de inicio de Google OAuth
 router.get(
   "/google",
-  passport.authenticate("google", { scope: ["profile", "email"] })
-);
-
-// 👉 Callback después del login
-router.get(
-  "/google/callback",
   passport.authenticate("google", {
-    failureRedirect: "http://localhost:5173/login", // redirige al login si falla
-    successRedirect: "http://localhost:5173/perfil", // redirige al perfil si OK
+    scope: ["profile", "email"],
   })
 );
 
-// 👉 Logout
-router.get("/logout", (req, res, next) => {
-  req.logout(err => {
-    if (err) return next(err);
-    res.redirect("http://localhost:5173/"); // vuelve al home
-  });
+// Callback de Google OAuth
+router.get(
+  "/google/callback",
+  passport.authenticate("google", {
+    failureRedirect: "/login",
+    session: true,
+  }),
+  (req, res) => {
+    // Redirigir según el rol
+    if ((req.user as any)?.role === "admin") {
+      res.redirect(process.env.FRONTEND_URL + "/admin");
+    } else {
+      res.redirect(process.env.FRONTEND_URL + "/perfil");
+    }
+  }
+);
+
+// Ruta para obtener usuario actual
+router.get("/me", (req, res) => {
+  if (!req.user) {
+    return res.status(401).json({ error: "Not authenticated" });
+  }
+  res.json(req.user);
 });
 
-// 👉 Obtener usuario actual
-router.get("/me", (req, res) => {
-  const user = req.user as AuthUser | undefined;
-
-  if (!user) {
-    return res.status(401).json({ message: "No autenticado" });
-  }
-
-  res.json(user);
+// Ruta de logout
+router.get("/logout", (req, res) => {
+  req.logout(() => {
+    res.redirect(process.env.FRONTEND_URL as string);
+  });
 });
 
 export default router;

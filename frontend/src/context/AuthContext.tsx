@@ -1,20 +1,7 @@
-import { createContext, useContext, useState } from "react";
+
+import { createContext, useState } from "react";
 import type { ReactNode } from "react";
-
-
-
-export interface User {
-  id: string;
-  nombre: string;
-  email: string;
-  role: "user" | "admin";
-}
-
-interface AuthContextType {
-  user?: User;
-  fetchUser: () => Promise<User | undefined>;
-  logout: () => void;
-}
+import type {User, AuthContextType } from "../types";
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -56,9 +43,3 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
-// ✅ Hook para usar contexto
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) throw new Error("useAuth debe usarse dentro de un AuthProvider");
-  return context;
-};

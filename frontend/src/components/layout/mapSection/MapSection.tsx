@@ -1,4 +1,4 @@
-// src/components/layout/MapSection.tsx
+
 import styles from "./MapSection.module.css";
 
 export default function MapSection() {
