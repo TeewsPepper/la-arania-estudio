@@ -1,14 +1,10 @@
-/* import express from "express";
+import { Request, Response } from "express";
 import Reserva from "../models/Reserva";
-import { authenticateUser } from "../middlewares/auth";
 
-const router = express.Router();
-
-// GET /reservas - Obtener todas las reservas del usuario
-router.get("/", authenticateUser, async (req, res) => {
+// GET /reservas
+export const getReservas = async (req: Request, res: Response) => {
   try {
     const user = req.user as any;
-
     const reservas = await Reserva.find({ userId: user._id })
       .sort({ fecha: -1, horaInicio: -1 });
 
@@ -20,14 +16,13 @@ router.get("/", authenticateUser, async (req, res) => {
     console.error("Error al obtener reservas:", error);
     res.status(500).json({ error: "Error al obtener reservas" });
   }
-});
+};
 
-// POST /reservas - Crear nueva reserva
-router.post("/", authenticateUser, async (req, res) => {
+// POST /reservas
+export const createReserva = async (req: Request, res: Response) => {
   try {
     const { fecha, horaInicio, horaFin, servicio, notas } = req.body;
-    
-    // Validaciones básicas
+
     if (!fecha || !horaInicio || !horaFin) {
       return res.status(400).json({ error: "Faltan campos requeridos" });
     }
@@ -48,13 +43,13 @@ router.post("/", authenticateUser, async (req, res) => {
     console.error("Error al crear reserva:", error);
     res.status(500).json({ error: "Error al crear reserva" });
   }
-});
+};
 
-// PUT /reservas/:id - Actualizar reserva
-router.put("/:id", authenticateUser, async (req, res) => {
+// PUT /reservas/:id
+export const updateReserva = async (req: Request, res: Response) => {
   try {
     const { fecha, horaInicio, horaFin, servicio, notas } = req.body;
-    
+
     const reserva = await Reserva.findOneAndUpdate(
       { _id: req.params.id, userId: (req.user as any)._id },
       { fecha, horaInicio, horaFin, servicio, notas },
@@ -70,10 +65,28 @@ router.put("/:id", authenticateUser, async (req, res) => {
     console.error("Error al actualizar reserva:", error);
     res.status(500).json({ error: "Error al actualizar reserva" });
   }
-});
+};
+export const marcarPagada = async (req: Request, res: Response) => {
+  try {
+    const reserva = await Reserva.findByIdAndUpdate(
+      req.params.id,
+      { pagada: true, status: "confirmed" }, // ajusta según tus estados
+      { new: true, runValidators: true }
+    ).populate("userId", "username email"); // 👈 clave para evitar undefined
 
-// DELETE /reservas/:id - Eliminar reserva
-router.delete("/:id", authenticateUser, async (req, res) => {
+    if (!reserva) {
+      return res.status(404).json({ error: "Reserva no encontrada" });
+    }
+
+    res.json(reserva);
+  } catch (error) {
+    console.error("Error al marcar como pagada:", error);
+    res.status(500).json({ error: "Error al marcar como pagada" });
+  }
+};
+
+// DELETE /reservas/:id
+export const deleteReserva = async (req: Request, res: Response) => {
   try {
     const reserva = await Reserva.findOneAndDelete({
       _id: req.params.id,
@@ -89,32 +102,4 @@ router.delete("/:id", authenticateUser, async (req, res) => {
     console.error("Error al eliminar reserva:", error);
     res.status(500).json({ error: "Error al eliminar reserva" });
   }
-});
-
-
-
-export default router; */
-import express from "express";
-import { authenticateUser } from "../middlewares/auth";
-import {
-  getReservas,
-  createReserva,
-  updateReserva,
-  deleteReserva
-} from "../controllers/reservaController"; // 👈 importamos la lógica
-
-const router = express.Router();
-
-// GET /reservas - Obtener todas las reservas del usuario
-router.get("/", authenticateUser, getReservas);
-
-// POST /reservas - Crear nueva reserva
-router.post("/", authenticateUser, createReserva);
-
-// PUT /reservas/:id - Actualizar reserva
-router.put("/:id", authenticateUser, updateReserva);
-
-// DELETE /reservas/:id - Eliminar reserva
-router.delete("/:id", authenticateUser, deleteReserva);
-
-export default router;
+};

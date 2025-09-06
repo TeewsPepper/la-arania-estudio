@@ -10,7 +10,7 @@ export default function Perfil() {
   return (
     <div className={styles.container}>
       <header className={styles.header}>
-        <h2>Perfil de {user?.name || "Usuario"}</h2>
+        <h2>Perfil de {user?.nombre || "Usuario"}</h2>
         <p>
           <strong>Email:</strong> {user?.email}
         </p>

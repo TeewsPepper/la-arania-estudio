@@ -3,7 +3,7 @@ import { useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import type { AuthContextType } from '../types';
 
-export const useAuth = (): AuthContextType => {
+export const useAuth = (): AuthContextType & { loading: boolean } => {
   const context = useContext(AuthContext);
   if (!context) {
     throw new Error('useAuth debe ser usado dentro de AuthProvider');

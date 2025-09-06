@@ -1,5 +1,7 @@
+
 import express from "express";
 import passport from "../config/passport";
+import { handleAuthRedirect } from "../controllers/authController";
 
 const router = express.Router();
 
@@ -18,21 +20,12 @@ router.get(
     failureRedirect: "/login",
     session: true,
   }),
-  (req, res) => {
-    // Redirigir según el rol
-    if ((req.user as any)?.role === "admin") {
-      res.redirect(process.env.FRONTEND_URL + "/admin");
-    } else {
-      res.redirect(process.env.FRONTEND_URL + "/perfil");
-    }
-  }
+  handleAuthRedirect // ← Redirige según rol usando authController
 );
 
 // Ruta para obtener usuario actual
 router.get("/me", (req, res) => {
-  if (!req.user) {
-    return res.status(401).json({ error: "Not authenticated" });
-  }
+  if (!req.user) return res.status(401).json({ error: "Not authenticated" });
   res.json(req.user);
 });
 

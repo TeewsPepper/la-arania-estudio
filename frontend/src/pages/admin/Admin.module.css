@@ -1,19 +1,21 @@
 .adminContainer {
-  padding: 2rem;
+  padding: 1rem;
   background-color: var(--background);
   color: var(--foreground);
   min-height: 100vh;
   font-family: var(--font-main);
+  box-sizing: border-box;
 }
 
 .title {
-  font-size: 2rem;
+  font-size: 1.75rem;
   margin-bottom: 1rem;
   color: var(--accent-color);
+  text-align: center;
 }
 
 .btnRefresh {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   padding: 0.5rem 1rem;
   background-color: var(--accent-alt);
   color: var(--color-white);
@@ -21,6 +23,7 @@
   border-radius: var(--radius);
   cursor: pointer;
   transition: background 0.3s;
+  width: fit-content;
 }
 
 .btnRefresh:hover {
@@ -28,13 +31,12 @@
 }
 
 .tableWrapper {
-  overflow-x: auto; /* permite scroll horizontal en móviles */
+  width: 100%;
 }
 
 .adminTable {
   width: 100%;
   border-collapse: collapse;
-  min-width: 600px; /* asegura tabla legible en escritorio */
 }
 
 .adminTable th,
@@ -42,6 +44,7 @@
   padding: 0.75rem 1rem;
   border: 1px solid var(--color-border);
   text-align: left;
+  font-size: 0.9rem;
 }
 
 .adminTable th {
@@ -53,12 +56,55 @@
   background-color: rgba(255, 255, 255, 0.05);
 }
 
-.adminTable td[data-label]::before {
-  content: attr(data-label);
-  font-weight: bold;
-  display: none;
+.btnGroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
 }
 
+.btnConfirmar {
+  background-color: #4caf50;
+  color: white;
+  padding: 0.4rem 0.8rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.btnConfirmar:hover {
+  background-color: #45a049;
+}
+
+.btnNeutral {
+  background-color: #2196f3;
+  color: white;
+  padding: 0.4rem 0.8rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.btnNeutral:hover {
+  background-color: #1976d2;
+}
+
+.btnRestar {
+  background-color: #f44336;
+  color: white;
+  padding: 0.4rem 0.8rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.btnRestar:hover {
+  background-color: #d32f2f;
+}
+
+/* RESPONSIVE: móvil - tarjetas */
 @media (max-width: 768px) {
   .adminTable,
   .adminTable thead,
@@ -69,7 +115,7 @@
     display: block;
   }
 
-  .adminTable thead tr {
+  .adminTable thead {
     display: none;
   }
 
@@ -78,33 +124,65 @@
     border: 1px solid var(--color-border);
     border-radius: var(--radius);
     padding: 0.5rem;
+    background-color: rgba(255, 255, 255, 0.02);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
   }
 
   .adminTable td {
-    padding: 0.5rem;
+    padding: 0.5rem 0.25rem;
     border: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     position: relative;
   }
 
   .adminTable td[data-label]::before {
-    display: block;
-    margin-bottom: 0.25rem;
+    content: attr(data-label);
+    font-weight: bold;
     color: var(--accent-alt);
+    width: 45%;
+    flex-shrink: 0;
+  }
+
+  .btnGroup {
+    flex-direction: column;
+  }
+}
+
+/* Móviles muy pequeños */
+@media (max-width: 480px) {
+  .adminContainer {
+    padding: 0.5rem;
+  }
+
+  .btnRefresh {
+    width: 100%;
+    padding: 0.5rem;
+  }
+
+  .adminTable td[data-label]::before {
+    width: 100%;
+    margin-bottom: 0.25rem;
+  }
+
+  .btnGroup button {
+    width: 100%;
   }
 }
 
 /* Status colors */
 .pending {
-  color: #f0ad4e; /* amarillo */
+  color: #f0ad4e;
   font-weight: bold;
 }
 
 .confirmed {
-  color: #5cb85c; /* verde */
+  color: #5cb85c;
   font-weight: bold;
 }
 
 .cancelled {
-  color: #d9534f; /* rojo */
+  color: #d9534f;
   font-weight: bold;
 }

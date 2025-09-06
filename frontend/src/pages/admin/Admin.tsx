@@ -1,36 +1,49 @@
-
+// Admin.tsx
 import { useEffect } from "react";
 import { toast } from "react-toastify";
 import { useReservas } from "../../hooks/useReservas";
 import styles from "./Admin.module.css";
 
 export default function Admin() {
-  const { reservas, fetchReservasAdmin, marcarPagada,  sumarHoras } = useReservas();
+  const { reservas, fetchReservasAdmin, updateReserva, setHorasAcumuladas } =
+    useReservas();
 
   useEffect(() => {
-    fetchReservasAdmin(); // cargar reservas reales al montar
+    fetchReservasAdmin(); // cargar reservas al montar
   }, []);
 
-  const handleConfirmarPago = async (id: string) => {
-  try {
-    const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/admin/reservations/${id}/status`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify({ status: "confirmed" }),
-    });
+  // 🔹 Handler unificado para confirmar pago y ajustar horas
+  const handleConfirmarPago = async (id: string, horasDelta: number = 0) => {
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/admin/reservations/${id}/confirmar-pago-horas`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ horasDelta }),
+        }
+      );
 
-    if (!res.ok) throw new Error("No se pudo actualizar la reserva");
-    await res.json();
+      if (!res.ok) throw new Error("No se pudo actualizar la reserva");
 
-    marcarPagada(id); 
-    sumarHoras(1);    
-    toast.success("✅ Pago confirmado");
-  } catch (err) {
-    console.error(err);
-    toast.error("⚠️ Error al confirmar el pago");
-  }
-};
+      // 🔹 Recibimos la reserva actualizada y horasAcumuladas exactas del backend
+      const { reserva, horasAcumuladas } = await res.json();
+
+      // Actualizamos la reserva localmente con los datos del backend
+      updateReserva(id, reserva);
+
+      // Sincronizamos las horas acumuladas tal como devuelve la DB
+      setHorasAcumuladas(horasAcumuladas);
+
+      toast.success(
+        `✅ Pago confirmado (${horasDelta > 0 ? "+" : ""}${horasDelta}h)`
+      );
+    } catch (err) {
+      console.error(err);
+      toast.error("⚠️ Error al confirmar el pago");
+    }
+  };
 
   return (
     <div className={styles.adminContainer}>
@@ -52,7 +65,9 @@ export default function Admin() {
         <tbody>
           {reservas.map((r) => (
             <tr key={r._id}>
-              <td>{r.userId.name} ({r.userId.email})</td>
+              <td>
+                {r.userId ? `${r.userId.name} (${r.userId.email})` : "Usuario eliminado"}
+              </td>
               <td>{r.fecha}</td>
               <td>{r.horaInicio}</td>
               <td>{r.horaFin}</td>
@@ -60,12 +75,26 @@ export default function Admin() {
               <td>{r.pagada ? "Pagada" : "Pendiente"}</td>
               <td>
                 {!r.pagada && (
-                  <button
-                    className={styles.btnConfirmar}
-                    onClick={() => handleConfirmarPago(r._id)}
-                  >
-                    Confirmar Pago
-                  </button>
+                  <div className={styles.btnGroup}>
+                    <button
+                      className={styles.btnConfirmar}
+                      onClick={() => handleConfirmarPago(r._id, 1)}
+                    >
+                      Confirmar +1h
+                    </button>
+                    <button
+                      className={styles.btnNeutral}
+                      onClick={() => handleConfirmarPago(r._id, 0)}
+                    >
+                      Confirmar
+                    </button>
+                    <button
+                      className={styles.btnRestar}
+                      onClick={() => handleConfirmarPago(r._id, -1)}
+                    >
+                      Confirmar -1h
+                    </button>
+                  </div>
                 )}
               </td>
             </tr>

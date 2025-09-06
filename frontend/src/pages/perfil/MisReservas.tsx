@@ -7,7 +7,7 @@ import styles from "./MisReservas.module.css";
 import type { Reserva } from "../../types";
 
 export default function MisReservas() {
-  const { reservas, removeReserva, sumarHoras, marcarPagada, fetchMisReservas } = useReservas();
+  const { reservas, removeReserva, marcarPagada, fetchMisReservas } = useReservas();
   const { user } = useAuth();
 
   // ✅ Llamar fetch al montar
@@ -21,7 +21,7 @@ export default function MisReservas() {
     const reserva = reservas.find((r) => r._id === reservaId);
     if (reserva && !reserva.pagada) {
       marcarPagada(reservaId);
-      sumarHoras(1);
+      
       toast.success(`✅ Pago confirmado para reserva ${reservaId}`);
     } else {
       toast.info("⚠️ Esta reserva ya estaba marcada como pagada");

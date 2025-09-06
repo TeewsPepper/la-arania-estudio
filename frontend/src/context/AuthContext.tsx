@@ -1,17 +1,20 @@
 
-import { createContext, useState } from "react";
+import { createContext, useState, useEffect } from "react";
 import type { ReactNode } from "react";
-import type {User, AuthContextType } from "../types";
+import type { AuthContextType, User } from "../types";
+import { API_URL } from "../config/api";
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User>();
+  const [loading, setLoading] = useState(true); // ← loading agregado
 
-  // ✅ Traer usuario desde backend
+  // Traer usuario desde backend
   const fetchUser = async (): Promise<User | undefined> => {
+    setLoading(true);
     try {
-      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/auth/me`, {
+      const res = await fetch(`${API_URL}/auth/me`, {
         credentials: "include",
       });
       if (!res.ok) return undefined;
@@ -21,13 +24,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     } catch (err) {
       console.error("Error al obtener usuario:", err);
       return undefined;
+    } finally {
+      setLoading(false);
     }
   };
 
-  // ✅ Logout
+  // Logout
   const logout = async () => {
     try {
-      await fetch(`${import.meta.env.VITE_BACKEND_URL}/auth/logout`, {
+      await fetch(`${API_URL}/auth/logout`, {
         credentials: "include",
       });
     } catch (err) {
@@ -36,10 +41,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setUser(undefined);
   };
 
+  // Al montar el contexto, intentar obtener usuario
+  useEffect(() => {
+    fetchUser();
+  }, []);
+
   return (
-    <AuthContext.Provider value={{ user, fetchUser, logout }}>
+    <AuthContext.Provider value={{ user, loading, fetchUser, logout }}>
       {children}
     </AuthContext.Provider>
   );
 };
-
