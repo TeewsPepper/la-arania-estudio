@@ -1,6 +1,7 @@
 // backend/src/controllers/adminController.ts
 import { Request, Response } from "express";
-import Reserva from "../models/Reserva";
+import Reserva, { IReservaDocument } from "../models/Reserva";
+import { FilterQuery } from "mongoose";
 import User from "../models/User";
 
 // GET /api/admin/stats
@@ -9,13 +10,17 @@ export const getStats = async (req: Request, res: Response) => {
     const today = new Date();
     const todayStr = today.toISOString().split("T")[0];
 
-    const [totalUsers, totalReservations, pendingReservations, todayReservations] =
-      await Promise.all([
-        User.countDocuments(),
-        Reserva.countDocuments(),
-        Reserva.countDocuments({ status: "pending" }),
-        Reserva.countDocuments({ fecha: todayStr }),
-      ]);
+    const [
+      totalUsers,
+      totalReservations,
+      pendingReservations,
+      todayReservations,
+    ] = await Promise.all([
+      User.countDocuments(),
+      Reserva.countDocuments(),
+      Reserva.countDocuments({ status: "pending" }),
+      Reserva.countDocuments({ fecha: todayStr }),
+    ]);
 
     res.json({
       totalUsers,
@@ -34,16 +39,14 @@ export const getReservations = async (req: Request, res: Response) => {
   try {
     const { page = 1, limit = 10, status } = req.query;
 
-    const query: any = {};
+    const query: FilterQuery<IReservaDocument> = {};
     if (status && status !== "all") {
-      query.status = status;
+      query.status = status as "pending" | "confirmed" | "cancelled";
     }
 
     const reservations = await Reserva.find(query)
       .populate("userId", "name email horasAcumuladas")
-      .sort({ fecha: -1, horaInicio: -1 })
-      .limit(Number(limit))
-      .skip((Number(page) - 1) * Number(limit));
+      .sort({ createdAt: -1 });
 
     const total = await Reserva.countDocuments(query);
 
@@ -76,21 +79,26 @@ export const confirmarPagoHoras = async (req: Request, res: Response) => {
     const { horasDelta } = req.body;
 
     let reserva = await Reserva.findById(req.params.id);
-    if (!reserva) return res.status(404).json({ error: "Reserva no encontrada" });
+    if (!reserva)
+      return res.status(404).json({ error: "Reserva no encontrada" });
 
     reserva.pagada = true;
     reserva.status = "confirmed";
     await reserva.save();
 
     const user = await User.findById(reserva.userId);
-    if (user && horasDelta) {
-      user.horasAcumuladas = Math.max((user.horasAcumuladas || 0) + horasDelta, 0);
+    if (user && typeof horasDelta === "number") {
+      user.horasAcumuladas = Math.max(
+        (user.horasAcumuladas || 0) + horasDelta,
+        0
+      );
       await user.save();
     }
 
-    // 🔹 volver a buscar populando userId
-    const reservaActualizada = await Reserva.findById(reserva._id)
-      .populate("userId", "name email horasAcumuladas");
+    const reservaActualizada = await Reserva.findById(reserva._id).populate(
+      "userId",
+      "name email horasAcumuladas"
+    );
 
     res.json({
       reserva: reservaActualizada,
@@ -98,7 +106,9 @@ export const confirmarPagoHoras = async (req: Request, res: Response) => {
     });
   } catch (error) {
     console.error("Error confirmar-pago-horas:", error);
-    res.status(500).json({ error: "Error al confirmar pago y actualizar horas" });
+    res
+      .status(500)
+      .json({ error: "Error al confirmar pago y actualizar horas" });
   }
 };
 
@@ -125,44 +135,5 @@ export const updateReservationStatus = async (req: Request, res: Response) => {
   } catch (error) {
     console.error("Error en PATCH /reservations/:id/status:", error);
     res.status(500).json({ error: "Error al actualizar reserva" });
-  }
-};
-
-// PATCH /api/admin/reservations/:id/confirmar-pago
-export const confirmarPago = async (req: Request, res: Response) => {
-  try {
-    const reserva = await Reserva.findById(req.params.id)
-      .populate("userId", "name email horasAcumuladas"); // 👈 añadimos populate
-
-    if (!reserva) return res.status(404).json({ error: "Reserva no encontrada" });
-
-    reserva.pagada = true;
-    reserva.status = "confirmed";
-    await reserva.save();
-
-    // Devolvemos la reserva nuevamente poblada
-    const reservaActualizada = await Reserva.findById(reserva._id)
-      .populate("userId", "name email horasAcumuladas");
-
-    res.json(reservaActualizada);
-  } catch (error) {
-    console.error("Error en confirmar pago:", error);
-    res.status(500).json({ error: "Error al confirmar pago" });
-  }
-};
-
-// PATCH /api/admin/users/:id/restar-hora
-export const restarHora = async (req: Request, res: Response) => {
-  try {
-    const user = await User.findById(req.params.id);
-    if (!user) return res.status(404).json({ error: "Usuario no encontrado" });
-
-    user.horasAcumuladas = Math.max((user.horasAcumuladas || 0) - 1, 0);
-    await user.save();
-
-    res.json(user);
-  } catch (error) {
-    console.error("Error en restar hora:", error);
-    res.status(500).json({ error: "Error al restar hora" });
   }
 };

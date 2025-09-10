@@ -20,18 +20,18 @@
 
 .title {
   font-family: var(--font-secondary);
-  font-size: 3rem;
+  font-size: 2.5rem;
   color: var(--accent-color);
   text-transform: uppercase;
   letter-spacing: 1px;
 }
 
-.conditions {
+.condiciones {
   background: rgba(0, 0, 0, 0.7);
   border: 1px solid var(--accent-color);
   border-radius: var(--radius);
   padding: var(--space-md);
-  font-size: var(--font-size-lg);
+  font-size: 1.8rem;
   line-height: 1.6;
   box-shadow: 0 0 20px rgba(255, 0, 85, 0.1);
   white-space: pre-line;
@@ -49,22 +49,22 @@
     font-size: var(--font-size-xl);
   }
   
-  .conditions {
+  .condiciones {
     padding: var(--space-sm);
   }
-  .conditions h2 {
+  .condiciones h2 {
     font-size: 2rem;
   }
-  .conditions p {
+  .condiciones  {
     font-size: 1rem ;
   }
 }
 @media (max-width: 480px) {
-    .conditions h2 {
+    .condiciones h2 {
     font-size: 1.3rem;
   }
-  .conditions p {
-    font-size: .7rem;
+  .condiciones  {
+    font-size: .9rem;
     line-height: 1.7;
   }
   .condiciones {

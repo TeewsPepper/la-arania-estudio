@@ -14,7 +14,7 @@ export default function PromocionDetalles() {
   return (
     <div className={styles.detailContainer}>
       <header className={styles.header}>
-        <h1 className={`${styles.title} ${styles.neonText}`}>{promo.title}</h1>
+        <h1 className={`${styles.title}`}>{promo.title}</h1>
       </header>
       
       <section className={styles.conditions}>

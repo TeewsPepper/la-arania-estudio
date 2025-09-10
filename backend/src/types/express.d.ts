@@ -5,11 +5,14 @@ declare global {
     interface UserPayload {
       id: string;
       email: string;
-      role: string;
+      role: "admin" | "user";
+      horasAcumuladas?: number;
     }
 
+    interface User extends UserPayload {} // ⚡ Sobrescribimos Express.User
+
     interface Request {
-      user?: UserPayload;
+      user?: User;
     }
   }
 }

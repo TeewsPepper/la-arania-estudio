@@ -1,26 +1,37 @@
 // backend/src/routes/admin.ts
 import express from "express";
 import { authenticateAdmin } from "../middlewares/auth";
-import { marcarPagada } from "../controllers/reservaController";
 import {
   getStats,
   getReservations,
   getUsers,
   confirmarPagoHoras,
   updateReservationStatus,
-  confirmarPago,
-  restarHora,
 } from "../controllers/adminController";
 
 const router = express.Router();
 
+// 📊 Estadísticas generales
 router.get("/stats", authenticateAdmin, getStats);
+
+// 📅 Reservas (para el panel admin)
 router.get("/reservations", authenticateAdmin, getReservations);
+
+// 👥 Usuarios (si en el futuro los listás en el admin)
 router.get("/users", authenticateAdmin, getUsers);
-router.put("/reservas/:id/pagar", authenticateAdmin, marcarPagada);
-router.patch("/reservations/:id/confirmar-pago-horas", authenticateAdmin, confirmarPagoHoras);
-router.patch("/reservations/:id/status", authenticateAdmin, updateReservationStatus);
-router.patch("/reservations/:id/confirmar-pago", authenticateAdmin, confirmarPago);
-router.patch("/users/:id/restar-hora", authenticateAdmin, restarHora);
+
+// ✅ Confirmar pago + horas (el único endpoint que usa Admin.tsx)
+router.patch(
+  "/reservations/:id/confirmar-pago-horas",
+  authenticateAdmin,
+  confirmarPagoHoras
+);
+
+// 🔄 Cambiar status de una reserva (opcional: si usás estados custom)
+router.patch(
+  "/reservations/:id/status",
+  authenticateAdmin,
+  updateReservationStatus
+);
 
 export default router;

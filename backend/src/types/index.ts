@@ -1,4 +1,9 @@
-// backend/src/types/index.ts
+// types/index.ts
+import { Request } from "express";
+import { IReservaDocument } from "../models/Reserva"; // 👈 Reutilizamos el modelo
+
+export type { IReservaDocument }; // exportamos el tipo del modelo
+
 export interface IUser {
   _id?: string;
   googleId?: string;
@@ -9,14 +14,12 @@ export interface IUser {
   createdAt?: Date;
 }
 
-export interface IReservation {
-  _id?: string;
-  userId: string;
-  date: Date;
-  startTime: string;
-  endTime: string;
-  status: 'pending' | 'confirmed' | 'cancelled';
-  clientNotes?: string;
-  adminNotes?: string;
-  createdAt?: Date;
+// Para usar en Express
+export interface AuthRequest extends Request {
+  user?: {
+    id: string;           // Mongo _id convertido a string
+    email: string;
+    role: 'user' | 'admin';
+    horasAcumuladas?: number;
+  };
 }

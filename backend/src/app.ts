@@ -3,14 +3,13 @@ import express from "express";
 import session from "express-session";
 import cors from "cors";
 import passport from "passport";
-import mongoose from "mongoose";
 import dotenv from "dotenv";
 import path from "path";
-
 import authRoutes from "./routes/authRoutes";
 import reservasRoutes from "./routes/reservasRoutes";
 import adminRoutes from "./routes/admin";
 import "./config/passport";
+import { connectDB, closeDB } from "./config/db";
 
 dotenv.config();
 
@@ -27,12 +26,7 @@ if (missingEnvVars.length > 0) {
 
 
 // Conexión a MongoDB
-mongoose.connect(process.env.MONGO_URI as string)
-  .then(() => console.log("✅ MongoDB conectado"))
-  .catch(err => {
-    console.error("❌ Error MongoDB:", err.message);
-    process.exit(1);
-  });
+connectDB();
 
 // Middlewares
 app.use(cors({
@@ -104,7 +98,7 @@ app.use((err: Error, _req: express.Request, res: express.Response, _next: expres
 });
 
 // Graceful shutdown
-process.on("SIGINT", async () => { await mongoose.connection.close(); process.exit(0); });
-process.on("SIGTERM", async () => { await mongoose.connection.close(); process.exit(0); });
+process.on("SIGINT", async () => { await closeDB(); process.exit(0); });
+process.on("SIGTERM", async () => { await closeDB(); process.exit(0); });
 
 export default app;

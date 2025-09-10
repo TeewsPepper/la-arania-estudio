@@ -7,9 +7,9 @@ export const promociones = [
     description: "Reservá y ganá automáticamente",
     condiciones: `🎉Ya podés participar!
 
-✓ Reservá 2+ horas
-✓ Vení a ensayar/grabar
-✓ Pagá tu consumo
+✓ Reservá 2+ horas.
+✓ Vení a ensayar.
+✓ Pagá tu consumo.
 
 ✨ **Recibís:** 1 hora gratis para usar al instante o acumular.
 
@@ -27,8 +27,9 @@ export const promociones = [
     title: "RECOMENDANOS Y GANAMOS TODOS",
     description: "Presentá un amigo y ambos ganan",
     condiciones: `🤝 Traé a tu banda/amigo:
-1. Decile que te mencione al registrarse.
-2. Que abone su primer ensayo (2+ horas).
+    
+1. Decile que reserve(2+ horas)a través de la página .
+2. Que al abonar su primer ensayo nos cuente que viene de parte tuya.
 3. ¡Ambos ganan 1 hora gratis!
 
 

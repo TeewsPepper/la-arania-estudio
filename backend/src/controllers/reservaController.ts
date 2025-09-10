@@ -1,16 +1,22 @@
-import { Request, Response } from "express";
+import {  Response } from "express";
+import { AuthRequest } from "../types"; // 👈 Importamos el tipo
 import Reserva from "../models/Reserva";
+import { Types } from "mongoose";
 
 // GET /reservas
-export const getReservas = async (req: Request, res: Response) => {
+export const getReservas = async (req: AuthRequest, res: Response) => {
   try {
-    const user = req.user as any;
-    const reservas = await Reserva.find({ userId: user._id })
+    const user = req.user; 
+    if (!user) {
+      return res.status(401).json({ error: "No autenticado" });
+    }
+
+    const reservas = await Reserva.find({ userId: user.id })
       .sort({ fecha: -1, horaInicio: -1 });
 
     res.json({
       reservas,
-      horasAcumuladas: user.horasAcumuladas || 0, // 🔹 aseguramos que exista
+      horasAcumuladas: user.horasAcumuladas ?? 0,
     });
   } catch (error) {
     console.error("Error al obtener reservas:", error);
@@ -19,23 +25,27 @@ export const getReservas = async (req: Request, res: Response) => {
 };
 
 // POST /reservas
-export const createReserva = async (req: Request, res: Response) => {
+export const createReserva = async (req: AuthRequest, res: Response) => {
   try {
-    const { fecha, horaInicio, horaFin, servicio, notas } = req.body;
+    if (!req.user) {
+      return res.status(401).json({ error: "No autenticado" });
+    }
+
+    const user = req.user; // aquí TS ya sabe que no es undefined
+
+    const { fecha, horaInicio, horaFin} = req.body;
 
     if (!fecha || !horaInicio || !horaFin) {
       return res.status(400).json({ error: "Faltan campos requeridos" });
     }
 
     const nuevaReserva = await Reserva.create({
-      userId: (req.user as any)._id,
+      userId: user.id, // 
       fecha,
       horaInicio,
       horaFin,
-      servicio,
-      notas,
       status: "pending",
-      pagada: false
+      pagada: false,
     });
 
     res.status(201).json(nuevaReserva);
@@ -46,13 +56,17 @@ export const createReserva = async (req: Request, res: Response) => {
 };
 
 // PUT /reservas/:id
-export const updateReserva = async (req: Request, res: Response) => {
+export const updateReserva = async (req: AuthRequest, res: Response) => {
   try {
-    const { fecha, horaInicio, horaFin, servicio, notas } = req.body;
+    if (!req.user) {
+      return res.status(401).json({ error: "No autenticado" });
+    }
+
+    const { fecha, horaInicio, horaFin } = req.body;
 
     const reserva = await Reserva.findOneAndUpdate(
-      { _id: req.params.id, userId: (req.user as any)._id },
-      { fecha, horaInicio, horaFin, servicio, notas },
+      { _id: req.params.id, userId: req.user.id }, 
+      { fecha, horaInicio, horaFin },
       { new: true, runValidators: true }
     );
 
@@ -66,7 +80,7 @@ export const updateReserva = async (req: Request, res: Response) => {
     res.status(500).json({ error: "Error al actualizar reserva" });
   }
 };
-export const marcarPagada = async (req: Request, res: Response) => {
+export const marcarPagada = async (req: AuthRequest, res: Response) => {
   try {
     const reserva = await Reserva.findByIdAndUpdate(
       req.params.id,
@@ -86,11 +100,15 @@ export const marcarPagada = async (req: Request, res: Response) => {
 };
 
 // DELETE /reservas/:id
-export const deleteReserva = async (req: Request, res: Response) => {
+export const deleteReserva = async (req: AuthRequest, res: Response) => {
   try {
+    if (!req.user) {
+      return res.status(401).json({ error: "No autenticado" });
+    }
+
     const reserva = await Reserva.findOneAndDelete({
       _id: req.params.id,
-      userId: (req.user as any)._id
+      userId: new Types.ObjectId(req.user.id), 
     });
 
     if (!reserva) {

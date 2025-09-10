@@ -1,7 +1,10 @@
 // backend/src/controllers/authController.ts
+import { Profile } from "passport-google-oauth20";
+import { Request, Response } from "express";
 import User, { IUserDocument } from "../models/User";
 
-export const findOrCreateUser = async (profile: any): Promise<IUserDocument> => {
+
+export const findOrCreateUser = async (profile: Profile): Promise<IUserDocument> => {
   const email = profile.emails?.[0]?.value;
   const name = profile.displayName || "Usuario";
   const avatar = profile.photos?.[0]?.value;
@@ -35,7 +38,7 @@ export const findOrCreateUser = async (profile: any): Promise<IUserDocument> => 
 };
 
 // Función para redirigir según rol
-export const handleAuthRedirect = (req: any, res: any) => {
+export const handleAuthRedirect = (req: Request, res: Response) => {
   if (!req.user) return res.redirect(`${process.env.FRONTEND_URL}/login`);
 
   const role = req.user.role;
