@@ -9,6 +9,7 @@ import authRoutes from "./routes/authRoutes";
 import reservasRoutes from "./routes/reservasRoutes";
 import adminRoutes from "./routes/admin";
 import "./config/passport";
+import MongoStore from "connect-mongo";
 import { connectDB, closeDB } from "./config/db";
 
 dotenv.config();
@@ -45,6 +46,10 @@ app.use(session({
   secret: process.env.SESSION_SECRET as string,
   resave: false,
   saveUninitialized: false,
+  store: MongoStore.create({
+    mongoUrl: process.env.MONGO_URI as string,
+    ttl: 24 * 60 * 60, // 1 día
+  }),
   cookie: {
     secure: process.env.NODE_ENV === "production", // HTTPS obligatorio en prod
     httpOnly: true,                                // No accesible desde JS
