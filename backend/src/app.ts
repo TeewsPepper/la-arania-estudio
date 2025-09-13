@@ -86,7 +86,7 @@ if (process.env.NODE_ENV === "production") {
 }
 
 // Manejo de rutas no encontradas
-app.all(/.*/, (req, res) => {
+app.use((req, res) => {
   res.status(404).json({ error: "Ruta no encontrada", path: req.originalUrl });
 });
 
