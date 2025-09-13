@@ -20,6 +20,6 @@ export interface AuthRequest extends Request {
     id: string;           // Mongo _id convertido a string
     email: string;
     role: 'user' | 'admin';
-    horasAcumuladas?: number;
+    horasAcumuladas: number;
   };
 }
