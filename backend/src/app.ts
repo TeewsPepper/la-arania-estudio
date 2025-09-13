@@ -30,7 +30,9 @@ connectDB();
 
 // Middlewares
 app.use(cors({
-  origin: process.env.FRONTEND_URL,
+  origin: process.env.NODE_ENV === "production"
+    ? "https://studio-frontend-dxtt.onrender.com"
+    : "http://localhost:5173",
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
   allowedHeaders: ["Content-Type", "Authorization"]
@@ -44,9 +46,9 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: process.env.NODE_ENV === "production",
-    httpOnly: true,
-    maxAge: 24 * 60 * 60 * 1000,
+    secure: process.env.NODE_ENV === "production", // HTTPS obligatorio en prod
+    httpOnly: true,                                // No accesible desde JS
+    maxAge: 24 * 60 * 60 * 1000,                  // 1 día
     sameSite: process.env.NODE_ENV === "production" ? "none" : "lax"
   }
 }));
