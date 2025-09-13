@@ -6,7 +6,7 @@ declare global {
       id: string;
       email: string;
       role: "admin" | "user";
-      horasAcumuladas?: number;
+      horasAcumuladas: number;
     }
 
     interface User extends UserPayload {} // ⚡ Sobrescribimos Express.User

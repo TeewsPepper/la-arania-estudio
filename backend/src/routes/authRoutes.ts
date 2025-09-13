@@ -30,9 +30,18 @@ router.get("/me", (req, res) => {
 });
 
 // Ruta de logout
-router.get("/logout", (req, res) => {
-  req.logout(() => {
-    res.redirect(process.env.FRONTEND_URL as string);
+router.get("/logout", (req, res, next) => {
+  req.logout(err => {
+    if (err) return next(err);
+    // Redirige a frontend según entorno
+    const FRONTEND_URL = process.env.FRONTEND_URL!;
+    res.clearCookie("connect.sid", {
+      path: "/",
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    });
+    res.redirect(FRONTEND_URL);
   });
 });
 
