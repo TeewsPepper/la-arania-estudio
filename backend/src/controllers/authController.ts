@@ -42,18 +42,16 @@ export const handleAuthRedirect = (req: Request, res: Response) => {
     return res.redirect(`${process.env.FRONTEND_URL}/login`);
   }
 
-  // ✅ Type assertion temporal
-  const user = req.user as any;
-  
+  // ✅ Redirigir a la raíz y pasar datos por query params
   const userData = encodeURIComponent(JSON.stringify({
-    id: user.id,
-    email: user.email,
-    name: user.name,      // ✅ Ahora no hay error de TypeScript
-    role: user.role
+    id: req.user.id,
+    email: req.user.email,
+    name: req.user.name,
+    role: req.user.role
   }));
 
-  const target = user.role === "admin" ? "/admin" : "/perfil";
-  const redirectUrl = `${process.env.FRONTEND_URL}${target}?authSuccess=true&user=${userData}`;
+  // Redirigir a la raíz y que React Router maneje el routing
+  const redirectUrl = `${process.env.FRONTEND_URL}/?authSuccess=true&user=${userData}`;
   
   return res.redirect(redirectUrl);
 };
