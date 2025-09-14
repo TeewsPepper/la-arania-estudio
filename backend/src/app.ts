@@ -34,7 +34,7 @@ app.use(cors({
   origin: "https://studio-frontend-dxtt.onrender.com", // ✅ URL exacta
   credentials: true, // ✅ PERMITE cookies
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization", "Cookie", "Set-Cookie"]
+  allowedHeaders: ["Content-Type", "Authorization"]
 }));
 
 app.use(express.json({ limit: "10mb" }));
@@ -53,9 +53,7 @@ app.use(session({
     httpOnly: true,                                // No accesible desde JS
     maxAge: 24 * 60 * 60 * 1000,                  // 1 día
     sameSite: 'none',
-    domain: process.env.NODE_ENV === "production" 
-      ? '.onrender.com' // ✅ Dominio compartido de Render
-      : undefined
+    
   }
 }));
 
