@@ -42,16 +42,10 @@ export const handleAuthRedirect = (req: Request, res: Response) => {
     return res.redirect(`${process.env.FRONTEND_URL}/login`);
   }
 
-  // ✅ Redirigir a la raíz y pasar datos por query params
-  const userData = encodeURIComponent(JSON.stringify({
-    id: req.user.id,
-    email: req.user.email,
-    name: req.user.name,
-    role: req.user.role
-  }));
+  // según el rol, decide a qué ruta mandar
+  if (req.user.role === "admin") {
+    return res.redirect(`${process.env.FRONTEND_URL}/admin`);
+  }
 
-  // Redirigir a la raíz y que React Router maneje el routing
-  const redirectUrl = `${process.env.FRONTEND_URL}/?authSuccess=true&user=${userData}`;
-  
-  return res.redirect(redirectUrl);
+  return res.redirect(`${process.env.FRONTEND_URL}/perfil`);
 };
