@@ -1,3 +1,4 @@
+// backend/src/routes/reservasRoutes.ts
 
 import express from "express";
 import { authenticateUser, authenticateAdmin } from "../middlewares/auth";
