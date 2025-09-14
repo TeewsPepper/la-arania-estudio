@@ -1,4 +1,4 @@
-
+// backend/src/models/User.ts
 import mongoose, { Document } from "mongoose";
 
 export interface IUser {           // Solo para Mongoose

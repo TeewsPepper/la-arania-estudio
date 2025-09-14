@@ -37,12 +37,23 @@ export const findOrCreateUser = async (profile: Profile): Promise<IUserDocument>
   return user;
 };
 
-// Función para redirigir según rol
 export const handleAuthRedirect = (req: Request, res: Response) => {
-  if (!req.user) return res.redirect(`${process.env.FRONTEND_URL}/login`);
+  if (!req.user) {
+    return res.redirect(`${process.env.FRONTEND_URL}/login`);
+  }
 
-  const role = req.user.role;
-  const target = role === "admin" ? "/admin" : "/perfil";
+  // ✅ Type assertion temporal
+  const user = req.user as any;
+  
+  const userData = encodeURIComponent(JSON.stringify({
+    id: user.id,
+    email: user.email,
+    name: user.name,      // ✅ Ahora no hay error de TypeScript
+    role: user.role
+  }));
 
-  return res.redirect(`${process.env.FRONTEND_URL}${target}`);
+  const target = user.role === "admin" ? "/admin" : "/perfil";
+  const redirectUrl = `${process.env.FRONTEND_URL}${target}?authSuccess=true&user=${userData}`;
+  
+  return res.redirect(redirectUrl);
 };

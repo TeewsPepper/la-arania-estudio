@@ -81,14 +81,14 @@ app.get("/health", (_req, res) => {
 });
 
 // Servir frontend en producción
-if (process.env.NODE_ENV === "production") {
+/* if (process.env.NODE_ENV === "production") {
   const frontendDist = path.join(__dirname, "../frontend/dist");
   app.use(express.static(frontendDist));
 
   app.get("/*", (_req, res) => {
     res.sendFile(path.join(frontendDist, "index.html"));
   });
-}
+} */
 
 // Manejo de rutas no encontradas
 app.use((req, res) => {

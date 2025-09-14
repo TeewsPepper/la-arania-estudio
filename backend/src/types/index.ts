@@ -1,4 +1,4 @@
-// types/index.ts
+// backend/src/types/index.ts
 import { Request } from "express";
 import { IReservaDocument } from "../models/Reserva"; // 👈 Reutilizamos el modelo
 
@@ -19,6 +19,7 @@ export interface AuthRequest extends Request {
   user?: {
     id: string;           // Mongo _id convertido a string
     email: string;
+    name: string;
     role: 'user' | 'admin';
     horasAcumuladas: number;
   };
