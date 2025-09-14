@@ -24,6 +24,9 @@ function App() {
 
   useEffect(() => {
     const handlePostLoginRedirect = async () => {
+
+      
+
       const searchParams = new URLSearchParams(location.search);
       const authSuccess = searchParams.get('authSuccess');
       const userData = searchParams.get('user');

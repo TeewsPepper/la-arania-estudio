@@ -49,10 +49,13 @@ app.use(session({
     ttl: 24 * 60 * 60, // 1 día
   }),
   cookie: {
-    secure: process.env.NODE_ENV === "production", // HTTPS obligatorio en prod
+    secure: true, // HTTPS obligatorio en prod
     httpOnly: true,                                // No accesible desde JS
     maxAge: 24 * 60 * 60 * 1000,                  // 1 día
-    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax"
+    sameSite: 'none',
+    domain: process.env.NODE_ENV === "production" 
+      ? '.onrender.com' // ✅ Dominio compartido de Render
+      : undefined
   }
 }));
 
