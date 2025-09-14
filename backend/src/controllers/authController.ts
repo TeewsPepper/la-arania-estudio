@@ -38,6 +38,8 @@ export const findOrCreateUser = async (profile: Profile): Promise<IUserDocument>
 };
 
 export const handleAuthRedirect = (req: Request, res: Response) => {
+  console.log('[auth] callback req.user:', req.user);
+  console.log('[auth] callback req.sessionID:', req.sessionID);
   if (!req.user) {
     return res.redirect(`${process.env.FRONTEND_URL}/login`);
   }

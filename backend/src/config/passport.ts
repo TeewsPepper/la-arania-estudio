@@ -42,13 +42,16 @@ passport.use(
 
 // 🔹 Serializar usuario (guardar solo el id en la sesión)
 passport.serializeUser((user: Express.User, done) => {
+  console.log('[passport] serializeUser:', user);
   done(null, user.id);
 });
 
 // 🔹 Deserializar usuario (buscar en DB y devolver payload limpio)
 passport.deserializeUser(async (id: string, done) => {
+  console.log('[passport] deserializeUser id:', id);
   try {
     const user = await User.findById(id);
+    console.log('[passport] deserialized user from DB:', !!user);
     if (!user) return done(null, false);
 
     const payload: Express.UserPayload = {
