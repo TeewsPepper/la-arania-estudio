@@ -1,22 +1,22 @@
-// backend/src/app.ta
+
 import express from "express";
 import session from "express-session";
 import cors from "cors";
 import passport from "passport";
-import dotenv from "dotenv";
 import path from "path";
+import MongoStore from "connect-mongo";
+import { connectDB, closeDB } from "./config/db";
+
 import authRoutes from "./routes/authRoutes";
 import reservasRoutes from "./routes/reservasRoutes";
 import adminRoutes from "./routes/admin";
 import "./config/passport";
-import MongoStore from "connect-mongo";
-import { connectDB, closeDB } from "./config/db";
 
+import dotenv from "dotenv";
 dotenv.config();
-
 const app = express();
 
-// Validar variables de entorno
+// Validar variables de entorno críticas
 const requiredEnvVars = ["MONGO_URI", "SESSION_SECRET", "FRONTEND_URL"];
 const missingEnvVars = requiredEnvVars.filter(v => !process.env[v]);
 if (missingEnvVars.length > 0) {
@@ -24,15 +24,10 @@ if (missingEnvVars.length > 0) {
   process.exit(1);
 }
 
-
-
-// Conexión a MongoDB
-connectDB();
-
 // Middlewares
 app.use(cors({
-  origin: "https://studio-frontend-dxtt.onrender.com", // ✅ URL exacta
-  credentials: true, // ✅ PERMITE cookies
+  origin: process.env.FRONTEND_URL, // ✅ Mantener variable de entorno
+  credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"]
 }));
@@ -40,6 +35,7 @@ app.use(cors({
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
+// Necesario si estás detrás de un proxy como Render
 app.set('trust proxy', 1);
 
 app.use(session({
@@ -48,14 +44,13 @@ app.use(session({
   saveUninitialized: false,
   store: MongoStore.create({
     mongoUrl: process.env.MONGO_URI as string,
-    ttl: 24 * 60 * 60, // 1 día
+    ttl: 24 * 60 * 60,
   }),
   cookie: {
-    secure: true, // HTTPS obligatorio en prod
-    httpOnly: true,                                // No accesible desde JS
-    maxAge: 24 * 60 * 60 * 1000,                  // 1 día
-    sameSite: 'none',
-    
+    secure: process.env.NODE_ENV === "production", // ✅ HTTPS obligatorio en prod
+    httpOnly: true,
+    maxAge: 24 * 60 * 60 * 1000,
+    sameSite: process.env.NODE_ENV === "production" ? 'none' : 'lax', // ✅ cookies cross-site
   }
 }));
 
@@ -81,22 +76,22 @@ app.get("/health", (_req, res) => {
   res.status(200).json({ status: "OK", timestamp: new Date().toISOString(), uptime: process.uptime() });
 });
 
-// Servir frontend en producción
-/* if (process.env.NODE_ENV === "production") {
+// Servir frontend en producción solo si está integrado en el mismo dominio
+if (process.env.NODE_ENV === "production") {
   const frontendDist = path.join(__dirname, "../frontend/dist");
   app.use(express.static(frontendDist));
 
-  app.get("/*", (_req, res) => {
+  app.get(/^\/(?!auth|reservas|admin|test|health).*/, (_req, res) => {
     res.sendFile(path.join(frontendDist, "index.html"));
   });
-} */
+}
 
 // Manejo de rutas no encontradas
 app.use((req, res) => {
   res.status(404).json({ error: "Ruta no encontrada", path: req.originalUrl });
 });
 
-// Error handler
+// Error handler global
 app.use((err: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
   console.error("💥 Error:", err);
   res.status(500).json({
@@ -104,9 +99,5 @@ app.use((err: Error, _req: express.Request, res: express.Response, _next: expres
     ...(process.env.NODE_ENV === "development" && { stack: err.stack })
   });
 });
-
-// Graceful shutdown
-process.on("SIGINT", async () => { await closeDB(); process.exit(0); });
-process.on("SIGTERM", async () => { await closeDB(); process.exit(0); });
 
 export default app;

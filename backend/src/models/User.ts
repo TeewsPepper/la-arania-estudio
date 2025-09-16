@@ -1,7 +1,16 @@
-// backend/src/models/User.ts
 import mongoose, { Document } from "mongoose";
 
-export interface IUser {           // Solo para Mongoose
+export interface IUserInput {
+  googleId?: string;
+  name: string;
+  email: string;
+  avatar?: string;
+  role?: "user" | "admin";
+  phone?: string;
+  horasAcumuladas?: number;
+}
+
+export interface IUser {
   googleId?: string;
   name: string;
   email: string;
@@ -13,7 +22,7 @@ export interface IUser {           // Solo para Mongoose
   updatedAt: Date;
 }
 
-export interface IUserDocument extends IUser, Document {}  // el tipo que devuelve mongoose
+export interface IUserDocument extends IUser, Document {}
 
 const userSchema = new mongoose.Schema({
   googleId: { type: String, unique: true, sparse: true },
