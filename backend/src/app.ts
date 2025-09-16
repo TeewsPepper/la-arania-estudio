@@ -71,10 +71,13 @@ app.get("/health", (_req, res) => {
 
 // Servir frontend en producción
 if (process.env.NODE_ENV === "production") {
-  const frontendDist = path.join(__dirname, "../dist"); // apunta a tu React build
+  // frontendDist apunta a la carpeta dist del frontend
+  const frontendDist = path.join(__dirname, "../dist"); // __dirname = dist-backend
+
+  // Servimos archivos estáticos
   app.use(express.static(frontendDist));
 
-  // Cualquier ruta que no sea API sirve index.html
+  // Cualquier ruta que no sea API devuelve index.html
   app.get("*", (_req, res) => {
     res.sendFile(path.join(frontendDist, "index.html"));
   });
