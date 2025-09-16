@@ -1,16 +1,17 @@
 import express from "express";
 import session from "express-session";
-import cors from "cors";
+import MongoStore from "connect-mongo";
 import passport from "passport";
+import cors from "cors";
 import path from "path";
-import dotenv from "dotenv";
+
 
 import authRoutes from "./routes/authRoutes";
 import reservasRoutes from "./routes/reservasRoutes";
 import adminRoutes from "./routes/admin";
 import "./config/passport";
 
-dotenv.config();
+
 
 const app = express();
 
@@ -39,6 +40,10 @@ app.use(session({
   secret: process.env.SESSION_SECRET as string,
   resave: false,
   saveUninitialized: false,
+  store: MongoStore.create({
+      mongoUrl: process.env.MONGO_URI as string,
+      ttl: 7 * 24 * 60 * 60, // 7 días
+    }),
   cookie: {
     secure: process.env.NODE_ENV === "production", // HTTPS obligatorio en prod
     httpOnly: true,                                 // no accesible desde JS
