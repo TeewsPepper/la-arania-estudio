@@ -76,15 +76,7 @@ app.get("/health", (_req, res) => {
   res.status(200).json({ status: "OK", timestamp: new Date().toISOString(), uptime: process.uptime() });
 });
 
-// Servir frontend en producción solo si está integrado en el mismo dominio
-if (process.env.NODE_ENV === "production") {
-  const frontendDist = path.join(__dirname, "../frontend/dist");
-  app.use(express.static(frontendDist));
 
-  app.get(/^\/(?!auth|reservas|admin|test|health).*/, (_req, res) => {
-    res.sendFile(path.join(frontendDist, "index.html"));
-  });
-}
 
 // Manejo de rutas no encontradas
 app.use((req, res) => {
