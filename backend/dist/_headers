@@ -1,0 +1,6 @@
+/img/share.png
+  Content-Type: image/png
+  Cache-Control: public, max-age=31536000
+
+/index.html
+  Cache-Control: public, max-age=0
