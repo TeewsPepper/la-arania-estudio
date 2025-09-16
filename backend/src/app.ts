@@ -1,32 +1,23 @@
-
 import express from "express";
 import session from "express-session";
 import cors from "cors";
 import passport from "passport";
-import dotenv from "dotenv";
 import path from "path";
+
 import authRoutes from "./routes/authRoutes";
 import reservasRoutes from "./routes/reservasRoutes";
 import adminRoutes from "./routes/admin";
 import "./config/passport";
-import { connectDB, closeDB } from "./config/db";
-
-dotenv.config();
 
 const app = express();
 
-// Validar variables de entorno
+// Validar variables de entorno críticas
 const requiredEnvVars = ["MONGO_URI", "SESSION_SECRET", "FRONTEND_URL"];
 const missingEnvVars = requiredEnvVars.filter(v => !process.env[v]);
 if (missingEnvVars.length > 0) {
   console.error("❌ Variables de entorno faltantes:", missingEnvVars);
   process.exit(1);
 }
-
-
-
-// Conexión a MongoDB
-connectDB();
 
 // Middlewares
 app.use(cors({
@@ -47,7 +38,7 @@ app.use(session({
     secure: process.env.NODE_ENV === "production",
     httpOnly: true,
     maxAge: 24 * 60 * 60 * 1000,
-    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax"
+    sameSite: "lax"
   }
 }));
 
@@ -78,9 +69,9 @@ if (process.env.NODE_ENV === "production") {
   const frontendDist = path.join(__dirname, "../frontend/dist");
   app.use(express.static(frontendDist));
 
-  app.get("*", (_req, res) => {
-    res.sendFile(path.join(frontendDist, "index.html"));
-  });
+  app.get(/^\/(?!auth|reservas|admin|test|health).*/, (_req, res) => {
+  res.sendFile(path.join(frontendDist, "index.html"));
+});
 }
 
 // Manejo de rutas no encontradas
@@ -88,7 +79,7 @@ app.all(/.*/, (req, res) => {
   res.status(404).json({ error: "Ruta no encontrada", path: req.originalUrl });
 });
 
-// Error handler
+// Error handler global
 app.use((err: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
   console.error("💥 Error:", err);
   res.status(500).json({
@@ -96,9 +87,5 @@ app.use((err: Error, _req: express.Request, res: express.Response, _next: expres
     ...(process.env.NODE_ENV === "development" && { stack: err.stack })
   });
 });
-
-// Graceful shutdown
-process.on("SIGINT", async () => { await closeDB(); process.exit(0); });
-process.on("SIGTERM", async () => { await closeDB(); process.exit(0); });
 
 export default app;
