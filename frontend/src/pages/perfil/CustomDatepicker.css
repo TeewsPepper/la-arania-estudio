@@ -7,6 +7,7 @@
   font-size: 16px;
   transition: all 0.3s;
   background-color: transparent;
+  color: var(--color-border);
 }
 
 .customDatepicker:focus {

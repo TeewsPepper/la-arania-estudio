@@ -33,7 +33,7 @@ label {
   padding: 0.6rem;
   border-radius: 8px;
   border: 1px solid var(--color-border);
-  background: #0c0c0c;
+  background: transparent;
   color: #fff;
   width: 100%;
 }
