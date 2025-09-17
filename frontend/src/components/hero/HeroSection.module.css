@@ -51,45 +51,40 @@
 /* Media queries */
 @media (max-width: 768px) {
   .hero {
-    height: 50%;
+    height: 100%;
     padding: .5rem 0.5rem;
     margin-top: 1rem;
   }
   
   .textContainer {
     width: 95%;
-    padding: 0.5rem;
+    padding: 0;
+  }
+  .textContainer h2 {
+    font-size: 1rem;
   }
   
   .title {
-    margin-bottom: 3rem;
+    margin-bottom: 1rem;
     line-height: 1;
-    font-size: 3.8rem;
+    font-size: 2rem;
     
   }
   
-  .subtitle {
+  /* .subtitle {
     line-height: 1.5;
     padding: 0 0.5rem;
-  }
+  } */
 }
-@media (max-width: 768px) {
-  
-  .title {
-    font-size: 2.9rem;
-    background-color: transparent;
-    margin-bottom: 1rem;
-  }
-  
-  .subtitle {
-    font-size: .8rem;
-  }
-}
+
 
 
 @media (max-width: 480px) {
   .hero {
     margin: 0;
+  }
+  .textContainer h2 {
+    font-size: var(--font-size-sm);
   }
   .title {
     font-size: 2rem;

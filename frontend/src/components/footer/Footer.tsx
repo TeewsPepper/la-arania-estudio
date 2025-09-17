@@ -6,18 +6,16 @@ const Footer = () => {
   return (
     <footer className={styles.footer}>
       <div className={styles.container}>
-        <p>
-          <a
-            className={styles.link}
-            aria-label="Enviar correo a contacto@laraniayu.com"
-            href="mailto:contacto@laraniayu.com"
-          >
-            contacto@laraniauy.com
-          </a>
-        </p>
+        
+
+       
+
+        {/* Copyright */}
         <p className={styles.copyright}>
           © {currentYear} LA ARAÑA. Todos los derechos reservados.
         </p>
+
+        {/* Credits */}
         <p className={styles.credits}>
           Powered by{" "}
           <a

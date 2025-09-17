@@ -1,0 +1,52 @@
+/* frontend/src/pages/Legal.module.css */
+.legal {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: clamp(1rem, 4vw, var(--space-lg)) clamp(0.75rem, 3vw, var(--space-md));
+  color: var(--foreground);
+  font-family: var(--font-main);
+  line-height: 1.6;
+  z-index: 2;
+  position: relative;
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
+}
+
+.legal h1 {
+  font-family: var(--font-secondary);
+  font-size: clamp(1.5rem, 5vw, var(--font-size-xxl));
+  margin-bottom: var(--space-md);
+  color: var(--accent-color);
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.legal h2 {
+  font-size: clamp(1.2rem, 4vw, var(--font-size-xl));
+  margin: var(--space-md) 0 var(--space-sm);
+  color: var(--accent-alt);
+}
+
+.legal p {
+  margin-bottom: var(--space-sm);
+  font-size: clamp(0.95rem, 3.5vw, var(--font-size-lg));
+}
+
+/* Ajustes extra para móviles muy pequeños (menos de 360px) */
+@media (max-width: 360px) {
+  .legal {
+    padding: 1rem;
+  }
+
+  .legal h1 {
+    font-size: 1.3rem;
+  }
+
+  .legal h2 {
+    font-size: 1.1rem;
+  }
+
+  .legal p {
+    font-size: 0.9rem;
+  }
+}

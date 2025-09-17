@@ -29,7 +29,7 @@ const ServicesSlider = () => {
     {
       id: 4,
       title: 'Vivo',
-      description: 'Grabación de presentaciones en directo'
+      description: 'Grabá tu show en vivo'
     },
      {
       id: 5,
@@ -39,7 +39,7 @@ const ServicesSlider = () => {
     {
       id: 6,
       title: 'Podcasts',
-      description: 'Equipo para grabar tu podcast con calidad profesional'
+      description: 'Grabá tus podcasts con calidad profesional'
     }
   ];
 

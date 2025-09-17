@@ -63,7 +63,7 @@ const Navbar = () => {
             Promociones
           </Link>
         </li>
-        <li>
+       {/*  <li>
           <Link
             to="/contacto"
             className={location.pathname === "/contacto" ? styles.active : ""}
@@ -71,7 +71,7 @@ const Navbar = () => {
           >
             Contacto
           </Link>
-        </li>
+        </li> */}
 
         {user ? (
           <>

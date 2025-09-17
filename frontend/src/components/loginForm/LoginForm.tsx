@@ -39,6 +39,16 @@ export default function LoginForm() {
         />
         
       </button>
+      <div className={styles.legal}>
+        <p>
+          <a className={styles.link} href="/privacidad">
+            Política de Privacidad
+          </a>{" | "}
+          <a className={styles.link} href="/aviso-legal">
+            Aviso Legal
+          </a>
+        </p>
+      </div>
     </section>
   );
 }

@@ -7,7 +7,6 @@
   /* padding: .2rem; */
   perspective: 1000px;
   background-color: transparent;
-  
 }
 
 .slide {
@@ -65,39 +64,39 @@
 /* Efectos responsivos */
 
 @media (max-width: 768px) {
-.serviceTitle {
-  
-  font-size: 2rem;
-  
-    .slide {
-  
-  height: 30vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  line-height: 1.1rem;
-  }
-  
-}
-
-}
-@media (max-width: 380px) {
-
-  .slide {
-  
-  height: 30vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  
+  .sliderContainer {
+    max-height: 100%;
   }
   .serviceTitle {
-    font-size: 1.1rem;
+    font-size: 2rem;
+    margin: 0;
+    /* .slide {
+      height: 30vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      line-height: 1.1rem;
+    } */
   }
-  
   .serviceDescription {
-    font-size: .8rem;
+    font-size: 1rem;
+  }
+}
+@media (max-width: 380px) {
+  .slide {
+    height: 30vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .serviceTitle {
+    font-size: 1.2rem;
+    margin-bottom: 0;
+  }
+
+  .serviceDescription {
+    font-size: 0.8rem;
   }
 }

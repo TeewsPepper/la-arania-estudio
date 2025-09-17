@@ -10,7 +10,7 @@ const About = () => {
         transition={{ duration: 0.6 }}
         className={styles.aboutTitle}
       >
-        30 años acompañando a la música nacional
+        30 años de música
       </motion.h2>
       <motion.p
         initial={{ opacity: 0 }}
@@ -18,9 +18,9 @@ const About = () => {
         transition={{ delay: 0.3, duration: 0.8 }}
         className={styles.aboutText}
       >
-        En <span className={styles.span}>La Araña Estudio</span>, 
-        asistimos en ensayos, grabaciones y toques en vivo, a una gran cantidad de artistas de nuestra escena musical independiente y profesional en los últimos 30 años. 
-        Más que un estudio: somos parte de tu historia.
+        En <span className={styles.span}>La Araña Estudio</span> te 
+        asistimos en ensayos, grabaciones y toques en vivo desde 1995. Un gran número de artistas de nuestra escena musical independiente y profesional en los últimos 30 años han pasado por aquí. El respeto por lo que hacemos es lo que nos caracteriza, brindando un espacio donde la creatividad y la música, puedan fluir.
+        
       </motion.p>
     </section>
   );

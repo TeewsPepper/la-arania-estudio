@@ -4,6 +4,22 @@ import styles from "./SocialNavbar.module.css";
 
 export default function SocialNavbar() {
   return (
+    <>
+    <h2 className={styles.title}>Contacto</h2>
+    {/* Correo de contacto */}
+    <div className={styles.contact}>
+        <p>
+          <a
+            className={styles.links}
+            aria-label="Enviar correo a contacto@laraniauy.com"
+            href="mailto:contacto@laraniauy.com"
+          >
+            contacto@laraniauy.com
+          </a>
+        </p>
+        <p>O visitanos en nuestras redes sociales</p>
+    </div>
+      
     <nav className={styles.socialNavbar}>
       <ul className={styles.links}>
         <li>
@@ -35,5 +51,6 @@ export default function SocialNavbar() {
         </li>
       </ul>
     </nav>
+    </>
   );
 }
