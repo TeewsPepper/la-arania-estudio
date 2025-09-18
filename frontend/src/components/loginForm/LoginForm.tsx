@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
+import { API_URL } from "../../config/api";
 import styles from "./LoginForm.module.css";
 
 export default function LoginForm() {
@@ -28,22 +29,20 @@ export default function LoginForm() {
 
       <button
         className={styles.googleButton}
-        onClick={() =>
-          window.open(`${import.meta.env.VITE_BACKEND_URL}/auth/google`, "_self")
-        }
+        onClick={() => window.open(`${API_URL}/auth/google`, "_self")}
       >
         <img
           src="/google-logo.svg"
           alt="Google"
           className={styles.googleLogo}
         />
-        
       </button>
       <div className={styles.legal}>
         <p>
           <a className={styles.link} href="/privacidad">
             Política de Privacidad
-          </a>{" | "}
+          </a>
+          {" | "}
           <a className={styles.link} href="/aviso-legal">
             Aviso Legal
           </a>
