@@ -5,60 +5,56 @@ import passport from "passport";
 import cors from "cors";
 import path from "path";
 
-
 import authRoutes from "./routes/authRoutes";
 import reservasRoutes from "./routes/reservasRoutes";
 import adminRoutes from "./routes/admin";
 import "./config/passport";
 
-
-
 const app = express();
-
 
 // Validar variables de entorno críticas
 const requiredEnvVars = ["MONGO_URI", "SESSION_SECRET", "FRONTEND_URL"];
-const missingEnvVars = requiredEnvVars.filter(v => !process.env[v]);
+const missingEnvVars = requiredEnvVars.filter((v) => !process.env[v]);
 if (missingEnvVars.length > 0) {
   console.error("❌ Variables de entorno faltantes:", missingEnvVars);
   process.exit(1);
 }
 
-
 // Middlewares
 
-  app.use(cors({
+app.use(
+  cors({
     origin: "https://araniauy.com",
     credentials: true,
-    methods: ["GET","POST","PUT","DELETE","PATCH","OPTIONS"],
-    allowedHeaders: ["Content-Type","Authorization"]
-  }));
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 
+app.set("trust proxy", 1); // necesario en Render para cookies seguras detrás de proxy
 
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
-app.set('trust proxy', 1); // necesario en Render para cookies seguras detrás de proxy
-
-app.use(session({
-  name: "sid", 
-  secret: process.env.SESSION_SECRET as string,
-  resave: false,
-  saveUninitialized: false,
-  store: MongoStore.create({
-    mongoUrl: process.env.MONGO_URI as string,
-    ttl: 7 * 24 * 60 * 60, // 7 días
-  }),
-  cookie: {
-    secure: true,          // HTTPS
-  httpOnly: true,
-  sameSite: "lax",       // No necesitamos none si es el mismo dominio
-  maxAge: 24*60*60*1000,
-  path: "/",
-  domain: "araniauy.com"
-  }
-}));
-
+app.use(
+  session({
+    name: "sid",
+    secret: process.env.SESSION_SECRET as string,
+    resave: false,
+    saveUninitialized: false,
+    store: MongoStore.create({
+      mongoUrl: process.env.MONGO_URI as string,
+      ttl: 7 * 24 * 60 * 60,
+    }),
+    cookie: {
+      secure: true, // ✅ aseguramos que SIEMPRE vaya como secure en prod
+      httpOnly: true,
+      sameSite: "lax", // ✅ ahora frontend y backend están en el mismo dominio
+      maxAge: 24 * 60 * 60 * 1000,
+      path: "/",
+    },
+  })
+);
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -79,7 +75,11 @@ app.use("/admin", adminRoutes);
 // Test y health check
 app.use("/test", (_req, res) => res.json({ message: "Test route works" }));
 app.get("/health", (_req, res) => {
-  res.status(200).json({ status: "OK", timestamp: new Date().toISOString(), uptime: process.uptime() });
+  res.status(200).json({
+    status: "OK",
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+  });
 });
 
 // Servir frontend en producción
@@ -102,12 +102,22 @@ app.use((req, res) => {
 });
 
 // Error handler global
-app.use((err: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
-  console.error("💥 Error:", err);
-  res.status(500).json({
-    error: process.env.NODE_ENV === "production" ? "Error interno del servidor" : err.message,
-    ...(process.env.NODE_ENV === "development" && { stack: err.stack })
-  });
-});
+app.use(
+  (
+    err: Error,
+    _req: express.Request,
+    res: express.Response,
+    _next: express.NextFunction
+  ) => {
+    console.error("💥 Error:", err);
+    res.status(500).json({
+      error:
+        process.env.NODE_ENV === "production"
+          ? "Error interno del servidor"
+          : err.message,
+      ...(process.env.NODE_ENV === "development" && { stack: err.stack }),
+    });
+  }
+);
 
 export default app;

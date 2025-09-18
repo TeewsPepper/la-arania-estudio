@@ -45,15 +45,8 @@ router.get("/me", (req, res) => {
 router.get("/logout", (req, res, next) => {
   req.logout(err => {
     if (err) return next(err);
-    const FRONTEND_URL = process.env.FRONTEND_URL!;
-    res.clearCookie("sid", { // coincide con name de session
-      path: "/",
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-      domain: ".araniauy.com"
-    });
-    res.redirect(FRONTEND_URL);
+    res.clearCookie("sid");
+    res.redirect("https://araniauy.com");
   });
 });
 
