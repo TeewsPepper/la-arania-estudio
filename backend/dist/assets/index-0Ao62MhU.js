@@ -75,6 +75,7 @@ Please change the parent <Route path="${E}"> to <Route path="${E==="/"?"*":`${E}
 
 ⚠️ **Importante!**
 
+• Válida únicamente para nuevos clientes.
 • No transferibles ni acumulables con otras promociones.
 • Requiere registro previo.
 • Uso máximo de 1 hora gratis por reserva.
@@ -89,11 +90,10 @@ Please change the parent <Route path="${E}"> to <Route path="${E==="/"?"*":`${E}
 📌 **Importante!**
 • No transferibles ni acumulables con otras promociones.
 • Requiere registro previo.
-• Promoción válida por tiempo limitado`,icon:"👥"},{id:"3",title:"HORA SOLIDARIA",description:"Doná alimentos y ganá tiempo",condiciones:`🥫 **Por cada integrante:**
+• Promoción válida por tiempo limitado`,icon:"👥"},{id:"3",title:"HORA SOLIDARIA",description:"Doná alimentos y ganá tiempo",condiciones:`🥫 **Por cada integrante(hasta 6):**
 - 1 alimento no perecedero
-- = 1 hora extra
 
-🧑‍🤝‍🧑 **Para grupos de 2-6 personas**
+2 Sumás 1 hora extra.
 
 ❤️ **Destino:** A definir.
 
