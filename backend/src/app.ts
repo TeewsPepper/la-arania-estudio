@@ -56,14 +56,7 @@ app.use(
   })
 );
 
-app.use((req, res, next) => {
-  console.log('🔍 Session debug:');
-  console.log(' - URL:', req.url);
-  console.log(' - Session ID:', req.sessionID);
-  console.log(' - Cookies:', req.headers.cookie);
-  console.log(' - User authenticated:', req.isAuthenticated());
-  next();
-});
+
 
 app.use(passport.initialize());
 app.use(passport.session());
