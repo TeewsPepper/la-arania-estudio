@@ -26,14 +26,14 @@ if (missingEnvVars.length > 0) {
 
 
 // Middlewares
-if (process.env.NODE_ENV === "development") {
+
   app.use(cors({
-    origin: process.env.FRONTEND_URL,
+    origin: "https://araniauy.com",
     credentials: true,
     methods: ["GET","POST","PUT","DELETE","PATCH","OPTIONS"],
     allowedHeaders: ["Content-Type","Authorization"]
   }));
-}
+
 
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
@@ -50,10 +50,12 @@ app.use(session({
     ttl: 7 * 24 * 60 * 60, // 7 días
   }),
   cookie: {
-    secure: process.env.NODE_ENV === "production",
-    httpOnly: true,
-    maxAge: 24 * 60 * 60 * 1000,
-    sameSite: "lax" // ahora funciona con backend + frontend en el mismo dominio
+    secure: true,          // HTTPS
+  httpOnly: true,
+  sameSite: "lax",       // No necesitamos none si es el mismo dominio
+  maxAge: 24*60*60*1000,
+  path: "/",
+  domain: "araniauy.com"
   }
 }));
 
