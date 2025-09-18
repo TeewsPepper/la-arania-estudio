@@ -21,7 +21,19 @@ router.get(
     failureRedirect: "/login",
     session: true,
   }),
-  handleAuthRedirect // ← Redirige según rol usando authController
+  (req, res, next) => {
+    // 🔹 Verificar si Passport puso req.user
+    console.log("✅ req.user:", req.user);
+
+    // 🔹 Ver qué cookie intenta enviar Express
+    console.log("✅ Set-Cookie header:", res.getHeader("Set-Cookie"));
+
+    // 🔹 Confirmar si la request se ve como HTTPS
+    console.log("✅ req.secure:", req.secure, "protocol:", req.protocol);
+
+    next(); // sigue hacia handleAuthRedirect
+  },
+  handleAuthRedirect
 );
 
 // Ruta para obtener usuario actual
