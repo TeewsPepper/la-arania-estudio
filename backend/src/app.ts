@@ -51,7 +51,6 @@ app.use(session({
     httpOnly: true,                                 // no accesible desde JS
     maxAge: 24 * 60 * 60 * 1000,                   // 1 día
     sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-    domain: ".araniauy.com"
   }
 }));
 
