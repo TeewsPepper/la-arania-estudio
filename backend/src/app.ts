@@ -15,6 +15,8 @@ import "./config/passport";
 
 const app = express();
 
+app.set('trust proxy', 1); // necesario en Render para cookies seguras detrás de proxy
+
 // Validar variables de entorno críticas
 const requiredEnvVars = ["MONGO_URI", "SESSION_SECRET", "FRONTEND_URL"];
 const missingEnvVars = requiredEnvVars.filter(v => !process.env[v]);
@@ -52,7 +54,7 @@ app.use(session({
     domain: ".araniauy.com"
   }
 }));
-app.set('trust proxy', 1); // necesario en Render para cookies seguras detrás de proxy
+
 
 app.use(passport.initialize());
 app.use(passport.session());
