@@ -37,6 +37,7 @@ app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 app.set('trust proxy', 1); // necesario en Render para cookies seguras detrás de proxy
 
 app.use(session({
+  name: "sid", 
   secret: process.env.SESSION_SECRET as string,
   resave: false,
   saveUninitialized: false,
@@ -48,7 +49,8 @@ app.use(session({
     secure: process.env.NODE_ENV === "production", // HTTPS obligatorio en prod
     httpOnly: true,                                 // no accesible desde JS
     maxAge: 24 * 60 * 60 * 1000,                   // 1 día
-    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax"
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    domain: ".araniauy.com"
   }
 }));
 
