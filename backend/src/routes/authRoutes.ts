@@ -22,16 +22,11 @@ router.get(
     session: true,
   }),
   (req, res, next) => {
-    // 🔹 Verificar si Passport puso req.user
     console.log("✅ req.user:", req.user);
-
-    // 🔹 Ver qué cookie intenta enviar Express
+    console.log("✅ req.sessionID:", req.sessionID);
+    console.log("✅ req.secure:", req.secure);
     console.log("✅ Set-Cookie header:", res.getHeader("Set-Cookie"));
-
-    // 🔹 Confirmar si la request se ve como HTTPS
-    console.log("✅ req.secure:", req.secure, "protocol:", req.protocol);
-
-    next(); // sigue hacia handleAuthRedirect
+    next();
   },
   handleAuthRedirect
 );
@@ -46,13 +41,13 @@ router.get("/me", (req, res) => {
 router.get("/logout", (req, res, next) => {
   req.logout(err => {
     if (err) return next(err);
-    // Redirige a frontend según entorno
     const FRONTEND_URL = process.env.FRONTEND_URL!;
-    res.clearCookie("connect.sid", {
+    res.clearCookie("sid", { // coincide con name de session
       path: "/",
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      domain: ".araniauy.com"
     });
     res.redirect(FRONTEND_URL);
   });

@@ -34,7 +34,6 @@ app.use(cors({
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
-app.set('trust proxy', 1); // necesario en Render para cookies seguras detrás de proxy
 
 app.use(session({
   name: "sid", 
@@ -42,9 +41,9 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   store: MongoStore.create({
-      mongoUrl: process.env.MONGO_URI as string,
-      ttl: 7 * 24 * 60 * 60, // 7 días
-    }),
+    mongoUrl: process.env.MONGO_URI as string,
+    ttl: 7 * 24 * 60 * 60, // 7 días
+  }),
   cookie: {
     secure: process.env.NODE_ENV === "production", // HTTPS obligatorio en prod
     httpOnly: true,                                 // no accesible desde JS
@@ -53,6 +52,7 @@ app.use(session({
     domain: ".araniauy.com"
   }
 }));
+app.set('trust proxy', 1); // necesario en Render para cookies seguras detrás de proxy
 
 app.use(passport.initialize());
 app.use(passport.session());
