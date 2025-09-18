@@ -22,14 +22,14 @@ if (missingEnvVars.length > 0) {
 
 // Middlewares
 
-app.use(
+/* app.use(
   cors({
     origin: "https://araniauy.com",
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
-);
+); */
 
 app.set("trust proxy", 1); // necesario en Render para cookies seguras detrás de proxy
 
@@ -47,14 +47,23 @@ app.use(
       ttl: 7 * 24 * 60 * 60,
     }),
     cookie: {
-      secure: true, // ✅ aseguramos que SIEMPRE vaya como secure en prod
-      httpOnly: true,
-      sameSite: "lax", // ✅ ahora frontend y backend están en el mismo dominio
+      secure: true,                   // ✅ HTTPS en producción
+      httpOnly: true,                 // ✅ Seguridad
+      sameSite: "lax",                // ✅ Perfecto para mismo dominio
       maxAge: 24 * 60 * 60 * 1000,
       path: "/",
     },
   })
 );
+
+app.use((req, res, next) => {
+  console.log('🔍 Session debug:');
+  console.log(' - URL:', req.url);
+  console.log(' - Session ID:', req.sessionID);
+  console.log(' - Cookies:', req.headers.cookie);
+  console.log(' - User authenticated:', req.isAuthenticated());
+  next();
+});
 
 app.use(passport.initialize());
 app.use(passport.session());

@@ -8,7 +8,7 @@ import { Types } from "mongoose";
 // 🔹 Callback URL según entorno
 const CALLBACK_URL =
   process.env.NODE_ENV === "production"
-    ? "https://studio-backend-04so.onrender.com/auth/google/callback"
+    ? "https://araniauy.com/auth/google/callback"
     : "http://localhost:4000/auth/google/callback";
 
 // 🔹 Estrategia Google OAuth
