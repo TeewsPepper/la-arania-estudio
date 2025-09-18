@@ -17,18 +17,22 @@ router.get(
 // Callback de Google OAuth
 router.get(
   "/google/callback",
-  passport.authenticate("google", {
-    failureRedirect: "/login",
-    session: true,
-  }),
   (req, res, next) => {
-    console.log("✅ req.user:", req.user);
-    console.log("✅ req.sessionID:", req.sessionID);
-    console.log("✅ req.secure:", req.secure);
-    console.log("✅ Set-Cookie header:", res.getHeader("Set-Cookie"));
-    next();
-  },
-  handleAuthRedirect
+    passport.authenticate("google", { session: true }, (err, user, info) => {
+      if (err) return next(err);
+      if (!user) return res.redirect(`${process.env.FRONTEND_URL}/login`);
+
+      // ⚡ aquí nos aseguramos de que la sesión se guarde
+      req.login(user, (err) => {
+        if (err) return next(err);
+
+        console.log("✅ req.user:", req.user);
+        console.log("✅ req.sessionID:", req.sessionID);
+
+        return handleAuthRedirect(req, res);
+      });
+    })(req, res, next);
+  }
 );
 
 // Ruta para obtener usuario actual
