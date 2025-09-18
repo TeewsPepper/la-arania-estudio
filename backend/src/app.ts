@@ -15,7 +15,6 @@ import "./config/passport";
 
 const app = express();
 
-app.set('trust proxy', 1); // necesario en Render para cookies seguras detrás de proxy
 
 // Validar variables de entorno críticas
 const requiredEnvVars = ["MONGO_URI", "SESSION_SECRET", "FRONTEND_URL"];
@@ -36,6 +35,7 @@ app.use(cors({
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
+app.set('trust proxy', 1); // necesario en Render para cookies seguras detrás de proxy
 
 app.use(session({
   name: "sid", 
@@ -47,10 +47,11 @@ app.use(session({
     ttl: 7 * 24 * 60 * 60, // 7 días
   }),
   cookie: {
-    secure: process.env.NODE_ENV === "production", // HTTPS obligatorio en prod
-    httpOnly: true,                                 // no accesible desde JS
-    maxAge: 24 * 60 * 60 * 1000,                   // 1 día
+    secure: process.env.NODE_ENV === "production",
+    httpOnly: true,
+    maxAge: 24 * 60 * 60 * 1000,
     sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    domain: process.env.NODE_ENV === "production" ? ".araniauy.com" : undefined,
   }
 }));
 
