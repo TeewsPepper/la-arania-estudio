@@ -11,9 +11,9 @@
   justify-content: center;
   gap: 1.5rem;
   padding: 1rem;
-  background-color: #111; /* tono oscuro */
+  background-color: #111; 
   border-top: 1px solid #333;
-  margin: 1rem 0;
+  margin: 1rem 0 3rem;
 }
 
 .links {
@@ -32,7 +32,7 @@
 }
 
 .links li a:hover {
-  color: #e91e63; /* acento vibrante */
+  color: #e91e63; 
 }
 .contact {
   width: 95%;
@@ -42,9 +42,23 @@
   align-items: center;
   text-align: center;
 }
-.contact a {
-  font-size: 1.9rem;
+.contact ul {
+  margin-bottom: 3rem;
+}
+.contact ul li {
+  list-style: none;
+}
+.contact ul li span {
+  color: var(--accent-alt);
+}
+.contact ul li a {
+  font-size: 1.2rem;
   margin-bottom: 1.5rem;
+  margin-left: 1rem;
+  color: var(--color-primary-dark);
+}
+.contact ul li a:hover {
+  color: var(--color-primary);
 }
 .contact p {
   font-size: 1.2rem;
@@ -62,6 +76,23 @@
 }
 
 @media (max-width: 480px) {
+  .contact ul li{
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0;
+    
+  }
+   .contact ul li a {
+    font-size: 1rem;
+    margin-top: 0;
+    
+    color: var(--color-primary-dark);
+  }
+    .contact ul li a:hover {
+    font-size: 1rem;
+    margin-top: 0;
+    color: var(--color-primary);
+  }
   .title {
     font-size: 2rem;
     margin-bottom: 1rem;
@@ -69,12 +100,5 @@
   .socialNavbar {
     display: flex;
     align-items: center;
-  }
-  .contact a {
-    margin: 1.5rem 0;
-    font-size: .9rem;
-  }
-  .contact p {
-    font-size: .8rem;
   }
 }
