@@ -1,6 +1,8 @@
 import {  Response } from "express";
 import { AuthRequest } from "../types"; // 👈 Importamos el tipo
 import Reserva from "../models/Reserva";
+import { isReservaDisponible } from "../utils/isReservaDisponible";
+
 import { Types } from "mongoose";
 
 // GET /reservas
@@ -31,16 +33,30 @@ export const createReserva = async (req: AuthRequest, res: Response) => {
       return res.status(401).json({ error: "No autenticado" });
     }
 
-    const user = req.user; // aquí TS ya sabe que no es undefined
-
-    const { fecha, horaInicio, horaFin} = req.body;
+    const { fecha, horaInicio, horaFin } = req.body;
 
     if (!fecha || !horaInicio || !horaFin) {
       return res.status(400).json({ error: "Faltan campos requeridos" });
     }
 
+    // 🔍 Buscar TODAS las reservas de ese día
+    const reservasDelDia = await Reserva.find({ fecha });
+
+    // 🕒 Verificar disponibilidad con tu helper
+    const disponible = isReservaDisponible(
+      reservasDelDia,
+      fecha,
+      horaInicio,
+      horaFin
+    );
+
+    if (!disponible) {
+      return res.status(400).json({ error: "Horario no disponible" });
+    }
+
+    // ✅ Crear la reserva si está disponible
     const nuevaReserva = await Reserva.create({
-      userId: user.id, // 
+      userId: req.user.id,
       fecha,
       horaInicio,
       horaFin,
