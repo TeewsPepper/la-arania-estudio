@@ -1,5 +1,5 @@
 import { useAuth } from '../../hooks/useAuth';
-import { useParams, Navigate } from 'react-router-dom';
+import { useParams, Navigate, Link } from 'react-router-dom';
 import { promociones } from '../../data/promociones';
 import styles from './PromocionDetalles.module.css';
 
@@ -20,6 +20,9 @@ export default function PromocionDetalles() {
       <section className={styles.conditions}>
         <h2>Condiciones:</h2>
         <p className={styles.condiciones}>{promo.condiciones}</p>
+        <Link to="/promociones" className={styles.backLink}>
+          ← Volver
+        </Link>
       </section>
     </div>
   );

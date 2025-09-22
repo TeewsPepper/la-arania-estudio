@@ -25,7 +25,7 @@ export default function LegalNotice() {
       <h2>Contacto</h2>
       <p>
         Para cualquier consulta legal, puedes escribirnos a 
-        <strong> contacto@laraniauy.com</strong>.
+        <strong> admin@araniauy.com</strong>.
       </p>
     </main>
   );
