@@ -10,8 +10,8 @@
 
 
 .backgroundLogo {
-  position: fixed; /* Cambiado a fixed para mejor comportamiento en mobile */
-  width: 150%; /* Mayor ancho para asegurar cobertura */
+  position: fixed; 
+  width: 150%; 
   height: 100%;
   max-width: 1400px;
   min-width: 300px;

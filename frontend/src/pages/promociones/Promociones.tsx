@@ -121,6 +121,28 @@ export default function Promociones() {
             </motion.div>
           ))}
         </motion.div>
+
+        {/* === SEO oculto para buscadores === */}
+        <section className={styles.visuallyHiddenSEO}>
+          <h2>Promociones de sala de ensayo en Montevideo</h2>
+          <p>
+            En <strong>La Araña Estudio</strong> ofrecemos <em>promociones de sala de ensayo</em> 
+            en Montevideo para que disfrutes más tiempo con tu banda. 
+            Tenemos descuentos especiales para músicos locales y proyectos independientes.
+          </p>
+
+          <h2>Descuentos en grabación musical</h2>
+          <p>
+            Aprovechá nuestras <strong>promos de grabación</strong> en nuestro estudio profesional. 
+            Contamos con equipos de última generación y más de 30 años de experiencia en la música.
+          </p>
+
+          <h2>Ofertas para músicos y bandas</h2>
+          <p>
+            Nuestras <em>promociones en Montevideo</em> incluyen paquetes de ensayo + grabación, 
+            precios reducidos en horarios especiales y beneficios exclusivos para artistas emergentes.
+          </p>
+        </section>
       </motion.div>
     </AnimatePresence>
   );

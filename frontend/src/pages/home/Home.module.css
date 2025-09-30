@@ -1,8 +1,8 @@
 
 
 .backgroundLogo {
-  position: fixed; /* Cambiado a fixed para mejor comportamiento en mobile */
-  width: 150%; /* Mayor ancho para asegurar cobertura */
+  position: fixed; 
+  width: 150%; 
   height: auto;
   max-width: 1200px;
   min-width: 300px;
@@ -15,28 +15,30 @@
   transform: translate(-50%, -50%);
 }
 
+.visuallyHiddenSEO {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  clip: rect(0 0 0 0);
+  overflow: hidden;
+  white-space: nowrap;
+}
 
 
 
-/* Botón base */
-/* button {
-  font-family: inherit;
-  font-size: var(--font-size-base);
-  border: none;
-  cursor: pointer;
-} */
 
-
-/* Media queries para ajustes específicos */
 @media (max-width: 768px) {
   .backgroundLogo {
-    width: 180%; /* Más ancho en mobile para evitar bordes vacíos */
+    width: 180%; 
     min-width: 100%;
     max-width: none;
   }
   
   .container {
-    min-height: 100vh; /* Mejor soporte para mobile browsers */
+    min-height: 100vh; 
   }
 }
 

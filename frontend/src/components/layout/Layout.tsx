@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import styles from './Layout.module.css';
-import logoBg from '../../assets/images/logo-bg-transparent.png';
+import logoBg from '../../assets/images/logo-bg-transparent.webp';
 import { Outlet } from "react-router-dom";
 import Footer from '../footer/Footer';
 import Navbar from '../navbar/Navbar';

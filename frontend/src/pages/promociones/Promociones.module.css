@@ -28,6 +28,19 @@
   max-width: 1400px;
 }
 
+.visuallyHiddenSEO {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  clip: rect(0 0 0 0);
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+
 
 /* Media Queries para responsividad */
 @media (max-width: 1024px) {
