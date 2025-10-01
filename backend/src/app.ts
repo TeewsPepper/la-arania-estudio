@@ -2,7 +2,7 @@ import express from "express";
 import session from "express-session";
 import MongoStore from "connect-mongo";
 import passport from "passport";
-import cors from "cors";
+
 import path from "path";
 
 import authRoutes from "./routes/authRoutes";
@@ -20,16 +20,6 @@ if (missingEnvVars.length > 0) {
   process.exit(1);
 }
 
-// Middlewares
-
-/* app.use(
-  cors({
-    origin: "https://araniauy.com",
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-); */
 
 app.set("trust proxy", 1); // necesario en Render para cookies seguras detrás de proxy
 
