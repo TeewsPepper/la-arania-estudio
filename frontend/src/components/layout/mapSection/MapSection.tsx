@@ -14,6 +14,7 @@ export default function MapSection() {
         allowFullScreen
         loading="lazy"
         referrerPolicy="no-referrer-when-downgrade"
+        title="Mapa de La Araña Estudio en Montevideo"
       ></iframe>
     </section>
   );

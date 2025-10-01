@@ -1,6 +1,6 @@
 # robots.txt para La Araña Estudio
 User-agent: *
-Allow: /
+Disallow: /login
 
-# Indicar la ubicación del sitemap
+# Sitemap
 Sitemap: https://araniauy.com/sitemap.xml

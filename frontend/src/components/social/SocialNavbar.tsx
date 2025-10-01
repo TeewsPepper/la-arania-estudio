@@ -1,61 +1,3 @@
-/* 
-import { FaFacebookF, FaInstagram, FaYoutube } from "react-icons/fa";
-import styles from "./SocialNavbar.module.css";
-
-export default function SocialNavbar() {
-  return (
-    <>
-    <h2 className={styles.title}>Contacto</h2>
-    
-    <div className={styles.contact}>
-        <p>
-          <a
-            className={styles.links}
-            aria-label="Enviar correo a contacto@laraniauy.com"
-            href="mailto:contacto@laraniauy.com"
-          >
-            contacto@laraniauy.com
-          </a>
-        </p>
-        <p>O visitanos en nuestras redes sociales</p>
-    </div>
-      
-    <nav className={styles.socialNavbar}>
-      <ul className={styles.links}>
-        <li>
-          <a
-            href="https://www.facebook.com/tuestudio"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <FaFacebookF />
-          </a>
-        </li>
-        <li>
-          <a
-            href="https://www.instagram.com/tuestudio"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <FaInstagram />
-          </a>
-        </li>
-        <li>
-          <a
-            href="https://www.youtube.com/tuestudio"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <FaYoutube />
-          </a>
-        </li>
-      </ul>
-    </nav>
-    </>
-  );
-}
- */
-
 import { FaFacebookF, FaInstagram, FaYoutube } from "react-icons/fa";
 import styles from "./SocialNavbar.module.css";
 
@@ -98,7 +40,9 @@ export default function SocialNavbar() {
             </a>
           </li>
         </ul>
-        <p className={styles.socialText}>O visitanos en nuestras redes sociales:</p>
+        <p className={styles.socialText}>
+          O visitanos en nuestras redes sociales:
+        </p>
       </div>
 
       {/* Redes sociales */}
@@ -106,27 +50,33 @@ export default function SocialNavbar() {
         <ul className={styles.links}>
           <li>
             <a
-              href="https://www.facebook.com/tuestudio"
+              href="https://www.facebook.com/profile.php?id=100054545105176"
               target="_blank"
               rel="noopener noreferrer"
+              aria-label="Visitar Facebook de La Araña Estudio"
+              title="Facebook"
             >
               <FaFacebookF />
             </a>
           </li>
           <li>
             <a
-              href="https://www.instagram.com/tuestudio"
+              href="https://www.instagram.com/jose_noel_gomez/"
               target="_blank"
               rel="noopener noreferrer"
+              aria-label="Visitar Instagram de La Araña Estudio"
+              title="Instagram"
             >
               <FaInstagram />
             </a>
           </li>
           <li>
             <a
-              href="https://www.youtube.com/tuestudio"
+              href="https://www.youtube.com/@TejiendoLaRed895"
               target="_blank"
               rel="noopener noreferrer"
+              aria-label="Visitar YouTube de La Araña Estudio"
+              title="YouTube"
             >
               <FaYoutube />
             </a>
