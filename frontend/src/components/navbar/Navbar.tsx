@@ -2,7 +2,7 @@ import { useState } from "react";
 import { motion, useAnimation } from "framer-motion";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
-import logoBg from "../../assets/images/logo-bg-transparent.png";
+import logoBg from "../../assets/images/logo-bg-transparent.webp";
 import styles from "./Navbar.module.css";
 
 const Navbar = () => {
