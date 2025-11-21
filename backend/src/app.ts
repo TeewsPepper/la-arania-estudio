@@ -93,6 +93,7 @@ app.use((req, res) => {
   res.status(404).json({ error: "Ruta no encontrada", path: req.originalUrl });
 });
 
+
 // Error handler global
 app.use(
   (
@@ -102,6 +103,10 @@ app.use(
     _next: express.NextFunction
   ) => {
     console.error("💥 Error:", err);
+
+    // 🔥 FIX MÍNIMO: NO enviar headers si ya fueron enviados
+    if (res.headersSent) return;
+
     res.status(500).json({
       error:
         process.env.NODE_ENV === "production"

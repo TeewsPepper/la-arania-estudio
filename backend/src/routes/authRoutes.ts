@@ -37,16 +37,37 @@ router.get(
 
 // Ruta para obtener usuario actual
 router.get("/me", (req, res) => {
-  if (!req.user) return res.status(401).json({ error: "Not authenticated" });
-  res.json(req.user);
+  if (!req.user) return res.json({ user: null });
+  return res.json({ user:req.user});
 });
 
 // Ruta de logout
 router.get("/logout", (req, res, next) => {
-  req.logout(err => {
+  
+  req.logout((err) => {
     if (err) return next(err);
-    res.clearCookie("sid");
-    res.redirect("https://araniauy.com");
+
+    // Si no hay req.session (por alguna razón), igual limpiamos la cookie y redirect
+    if (!req.session) {
+      res.clearCookie("sid");
+      return res.redirect(process.env.FRONTEND_URL || "https://araniauy.com");
+    }
+
+    req.session.destroy((err) => {
+      if (err) {
+        // no hacemos fail hard: logueamos y procedemos a limpiar cookie + redirect
+        console.error("Error destroying session on logout:", err);
+      }
+
+      res.clearCookie("sid", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        path: "/",
+      });
+
+      return res.redirect(process.env.FRONTEND_URL || "https://araniauy.com");
+    });
   });
 });
 
