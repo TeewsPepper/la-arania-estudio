@@ -1,4 +1,4 @@
-// backend/src/routes/authRoutes.ts
+/* // backend/src/routes/authRoutes.ts
 
 import express from "express";
 import passport from "../config/passport";
@@ -50,4 +50,89 @@ router.get("/logout", (req, res, next) => {
   });
 });
 
+export default router; */
+
+// backend/src/routes/authRoutes.ts
+import express from "express";
+import passport from "../config/passport";
+import { handleAuthRedirect } from "../controllers/authController";
+
+const router = express.Router();
+
+// --------------------------------------
+// 🔵 INICIO DE OAUTH
+// --------------------------------------
+router.get(
+  "/google",
+  passport.authenticate("google", {
+    scope: ["profile", "email"],
+    prompt: "select_account",
+  })
+);
+
+// --------------------------------------
+// 🔵 CALLBACK DE OAUTH
+// --------------------------------------
+router.get(
+  "/google/callback",
+  (req, res, next) => {
+    passport.authenticate("google", { session: true }, (err, user, info) => {
+      if (err) return next(err);
+      if (!user)
+        return res.redirect(`${process.env.FRONTEND_URL}/login`);
+
+      // guardar sesión correctamente
+      req.login(user, (err) => {
+        if (err) return next(err);
+
+        console.log("✅ Login OK:", req.sessionID);
+
+        return handleAuthRedirect(req, res);
+      });
+    })(req, res, next);
+  }
+);
+
+// --------------------------------------
+// 👤 ESTADO ACTUAL DEL USUARIO
+// Nunca devolvemos 401 → evita loops
+// --------------------------------------
+router.get("/me", (req, res) => {
+  try {
+    const user = req.user || null;
+    return res.json({ user });
+  } catch {
+    return res.json({ user: null });
+  }
+});
+
+// --------------------------------------
+// 🔴 LOGOUT CORRECTO
+// destruye sesión en store + borra cookie
+// --------------------------------------
+router.get("/logout", (req, res) => {
+  const redirectUrl = process.env.FRONTEND_URL || "https://araniauy.com";
+
+  if (!req.session) {
+    res.clearCookie("sid");
+    return res.redirect(redirectUrl);
+  }
+
+  req.session.destroy((err) => {
+    if (err) {
+      console.error("Error destruyendo sesión:", err);
+    }
+
+    res.clearCookie("sid", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "lax",
+      path: "/",
+    });
+
+    return res.redirect(redirectUrl);
+  });
+});
+
 export default router;
+
