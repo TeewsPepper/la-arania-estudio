@@ -20,12 +20,12 @@ if (missingEnvVars.length > 0) {
   process.exit(1);
 }
 
+
 app.set("trust proxy", 1); // necesario en Render para cookies seguras detrás de proxy
 
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
-// 🔐 Session + Passport (siempre antes de las rutas)
 app.use(
   session({
     name: "sid",
@@ -37,23 +37,27 @@ app.use(
       ttl: 7 * 24 * 60 * 60,
     }),
     cookie: {
-      secure: true, // HTTPS en producción
-      httpOnly: true,
-      sameSite: "lax",
+      secure: true,                   // ✅ HTTPS en producción
+      httpOnly: true,                 // ✅ Seguridad
+      sameSite: "lax",                // ✅ Perfecto para mismo dominio
       maxAge: 24 * 60 * 60 * 1000,
       path: "/",
     },
   })
 );
 
+
+
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Log básico
-app.use((req, _res, next) => {
-  console.log("➡️ Request:", req.method, req.path);
-  next();
-});
+// Logging en desarrollo
+if (process.env.NODE_ENV === "development") {
+  app.use((req, _res, next) => {
+    console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
+    next();
+  });
+}
 
 // Rutas API
 app.use("/auth", authRoutes);
@@ -70,25 +74,24 @@ app.get("/health", (_req, res) => {
   });
 });
 
-// 🧭 PRODUCCIÓN → servir frontend
+// Servir frontend en producción
 if (process.env.NODE_ENV === "production") {
-  const frontendDist = path.join(__dirname, "../dist");
+  // frontendDist apunta a la carpeta dist del frontend
+  const frontendDist = path.join(__dirname, "../dist"); // __dirname = dist-backend
 
-  // Archivos estáticos
+  // Servimos archivos estáticos
   app.use(express.static(frontendDist));
 
-  // SPA fallback → siempre al final, después de las rutas API
+  // Cualquier ruta que no sea API devuelve index.html
   app.get("*", (_req, res) => {
     res.sendFile(path.join(frontendDist, "index.html"));
   });
 }
 
-// Manejo de rutas no encontradas (solo si no estamos en producción)
-if (process.env.NODE_ENV !== "production") {
-  app.use((req, res) => {
-    res.status(404).json({ error: "Ruta no encontrada", path: req.originalUrl });
-  });
-}
+// Manejo de rutas no encontradas
+app.use((req, res) => {
+  res.status(404).json({ error: "Ruta no encontrada", path: req.originalUrl });
+});
 
 // Error handler global
 app.use(
