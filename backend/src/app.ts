@@ -191,12 +191,16 @@ app.use((req: express.Request, res: express.Response, next: express.NextFunction
   next();
 });
 
-// ⭐⭐ RATE LIMITING MUY PERMISIVO (solo para diagnóstico)
+// Rate limiting MÁS ESTRICTO para /auth/me
 const authMeLimiter = rateLimit({
   windowMs: 1 * 60 * 1000, // 1 minuto
-  max: 100, // ⭐ MUY ALTO temporalmente
+  max: 10, // ⭐ REDUCIDO: 10 requests por minuto
   message: { error: 'Demasiadas verificaciones de autenticación' },
-  skip: (req: express.Request) => req.path !== '/auth/me'
+  skip: (req: express.Request) => req.path !== '/auth/me',
+  handler: (req, res) => {
+    console.warn(`🚨 RATE LIMIT EXCEDIDO: ${req.ip} para /auth/me - Bloqueando`);
+    res.status(429).json({ error: 'Demasiadas verificaciones de autenticación' });
+  }
 });
 
 // 🚀 RUTAS PRINCIPALES (SIN rate limiting agresivo)
