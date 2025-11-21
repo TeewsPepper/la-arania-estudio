@@ -35,19 +35,48 @@ router.get(
   }
 );
 
-// Ruta para obtener usuario actual
+// ====================================
+//   🔥 FIX: /auth/me seguro
+// ====================================
 router.get("/me", (req, res) => {
-  if (!req.user) return res.status(401).json({ error: "Not authenticated" });
-  res.json(req.user);
+  try {
+    // Si no hay user, devolvemos user:null en vez de 401
+    // esto evita que el frontend haga reintentos en bucle
+    if (!req.user) {
+      return res.json({ user: null });
+    }
+
+    return res.json({ user: req.user });
+
+  } catch (error) {
+    // fallback si alguna librería lanza error
+    return res.json({ user: null });
+  }
 });
 
-// Ruta de logout
+// ====================================
+//   🔥 FIX REAL: logout seguro
+// ====================================
 router.get("/logout", (req, res, next) => {
-  req.logout(err => {
-    if (err) return next(err);
-    res.clearCookie("sid");
-    res.redirect("https://araniauy.com");
-  });
+  try {
+    req.logout((err) => {
+      if (err) return next(err);
+
+      // elimina cookie de sesión
+      res.clearCookie("sid", {
+        httpOnly: true,
+        secure: true,
+        sameSite: "lax",
+      });
+
+      // redirigir al frontend
+      return res.redirect("https://araniauy.com");
+    });
+
+  } catch (e) {
+    console.error("Logout error:", e);
+    return res.redirect("https://araniauy.com");
+  }
 });
 
 export default router;
