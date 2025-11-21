@@ -51,6 +51,49 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
+// 🔍 🔍 🔍 AQUÍ COLOCA EL MIDDLEWARE DE DIAGNÓSTICO 🔍 🔍 🔍
+// ==========================================================
+
+// MIDDLEWARE 1: Contador de requests activos
+let activeRequests = 0;
+
+app.use((req, res, next) => {
+  activeRequests++;
+  const requestId = Math.random().toString(36).substring(7);
+  (req as any).requestId = requestId;
+  
+  console.log(`🚀 [${requestId}] INICIO: ${req.method} ${req.path} | Activos: ${activeRequests}`);
+  
+  // Timer para medir duración
+  const startTime = Date.now();
+  
+  res.on('finish', () => {
+    const duration = Date.now() - startTime;
+    activeRequests--;
+    console.log(`✅ [${requestId}] FIN: ${req.method} ${req.path} | Duración: ${duration}ms | Activos: ${activeRequests}`);
+  });
+  
+  next();
+});
+
+// MIDDLEWARE 2: Debug de autenticación
+app.use((req, res, next) => {
+  if (req.isAuthenticated()) {
+    console.log(`🔐 [${(req as any).requestId}] Usuario autenticado:`, {
+      email: req.user?.email,
+      sessionId: req.sessionID?.substring(0, 8) + '...',
+      path: req.path
+    });
+  } else {
+    console.log(`👤 [${(req as any).requestId}] Usuario NO autenticado | Path: ${req.path}`);
+  }
+  next();
+});
+
+// ==========================================================
+// FIN DE MIDDLEWARES DE DIAGNÓSTICO
+// ==========================================================
+
 // Logging en desarrollo
 if (process.env.NODE_ENV === "development") {
   app.use((req, _res, next) => {
