@@ -20,17 +20,12 @@ if (missingEnvVars.length > 0) {
   process.exit(1);
 }
 
-if (process.env.NODE_ENV === "production") {
-  const frontendDist = path.join(__dirname, "../dist");
-  app.use(express.static(frontendDist));
-}
-
-
 app.set("trust proxy", 1); // necesario en Render para cookies seguras detrás de proxy
 
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
+// 🔐 Session + Passport (siempre antes de las rutas)
 app.use(
   session({
     name: "sid",
@@ -42,27 +37,23 @@ app.use(
       ttl: 7 * 24 * 60 * 60,
     }),
     cookie: {
-      secure: true,                   // ✅ HTTPS en producción
-      httpOnly: true,                 // ✅ Seguridad
-      sameSite: "lax",                // ✅ Perfecto para mismo dominio
+      secure: true, // HTTPS en producción
+      httpOnly: true,
+      sameSite: "lax",
       maxAge: 24 * 60 * 60 * 1000,
       path: "/",
     },
   })
 );
 
-
-
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Logging en desarrollo
-if (process.env.NODE_ENV === "development") {
-  app.use((req, _res, next) => {
-    console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
-    next();
-  });
-}
+// Log básico
+app.use((req, _res, next) => {
+  console.log("➡️ Request:", req.method, req.path);
+  next();
+});
 
 // Rutas API
 app.use("/auth", authRoutes);
@@ -79,19 +70,25 @@ app.get("/health", (_req, res) => {
   });
 });
 
-// 🧭 Fallback SPA 
+// 🧭 PRODUCCIÓN → servir frontend
 if (process.env.NODE_ENV === "production") {
-  const frontendDist = path.join(__dirname, "../dist"); 
+  const frontendDist = path.join(__dirname, "../dist");
+
+  // Archivos estáticos
   app.use(express.static(frontendDist));
+
+  // SPA fallback → siempre al final, después de las rutas API
   app.get("*", (_req, res) => {
     res.sendFile(path.join(frontendDist, "index.html"));
   });
 }
 
-// Manejo de rutas no encontradas
-app.use((req, res) => {
-  res.status(404).json({ error: "Ruta no encontrada", path: req.originalUrl });
-});
+// Manejo de rutas no encontradas (solo si no estamos en producción)
+if (process.env.NODE_ENV !== "production") {
+  app.use((req, res) => {
+    res.status(404).json({ error: "Ruta no encontrada", path: req.originalUrl });
+  });
+}
 
 // Error handler global
 app.use(
