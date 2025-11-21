@@ -20,6 +20,11 @@ if (missingEnvVars.length > 0) {
   process.exit(1);
 }
 
+if (process.env.NODE_ENV === "production") {
+  const frontendDist = path.join(__dirname, "../dist");
+  app.use(express.static(frontendDist));
+}
+
 
 app.set("trust proxy", 1); // necesario en Render para cookies seguras detrás de proxy
 
@@ -74,15 +79,10 @@ app.get("/health", (_req, res) => {
   });
 });
 
-// Servir frontend en producción
+// 🧭 Fallback SPA 
 if (process.env.NODE_ENV === "production") {
-  // frontendDist apunta a la carpeta dist del frontend
-  const frontendDist = path.join(__dirname, "../dist"); // __dirname = dist-backend
-
-  // Servimos archivos estáticos
+  const frontendDist = path.join(__dirname, "../dist"); 
   app.use(express.static(frontendDist));
-
-  // Cualquier ruta que no sea API devuelve index.html
   app.get("*", (_req, res) => {
     res.sendFile(path.join(frontendDist, "index.html"));
   });
