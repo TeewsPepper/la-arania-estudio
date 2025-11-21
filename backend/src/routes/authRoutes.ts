@@ -37,13 +37,8 @@ router.get(
 
 // Ruta para obtener usuario actual
 router.get("/me", (req, res) => {
-  // ⭐ CAMBIO CRÍTICO: No usar 401, usar 200 con user: null
-  if (!req.isAuthenticated()) {
-    return res.status(200).json({ user: null }); // ← 200 en lugar de 401
-  }
-  
-  console.log(`✅ /auth/me - Usuario autenticado: ${req.user.email}`);
-  res.json({ user: req.user }); // ← Incluir en objeto {user}
+  if (!req.user) return res.status(401).json({ error: "Not authenticated" });
+  res.json(req.user);
 });
 
 // Ruta de logout
