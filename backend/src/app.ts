@@ -194,7 +194,7 @@ app.use((req: express.Request, res: express.Response, next: express.NextFunction
 // Rate limiting MÁS ESTRICTO para /auth/me
 const authMeLimiter = rateLimit({
   windowMs: 1 * 60 * 1000, // 1 minuto
-  max: 10, // ⭐ REDUCIDO: 10 requests por minuto
+  max: 5, // ⭐ REDUCIDO: 10 requests por minuto
   message: { error: 'Demasiadas verificaciones de autenticación' },
   skip: (req: express.Request) => req.path !== '/auth/me',
   handler: (req, res) => {

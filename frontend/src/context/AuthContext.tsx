@@ -57,143 +57,134 @@ import { API_URL } from "../config/api";
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// ⭐⭐ CACHE SUPER AGRESIVO
-let globalAuthCache = {
+// ⭐⭐ CACHE TOTAL - Una sola llamada por sesión
+let globalAuth = {
   user: undefined as User | undefined,
   loading: true,
-  lastFetch: 0,
+  initialized: false,
   promise: null as Promise<User | undefined> | null,
   subscribers: new Set<(user: User | undefined, loading: boolean) => void>()
 };
 
-const CACHE_DURATION = 10000; // 10 segundos de cache
-
-// Notificar a todos los componentes suscritos
-const notifySubscribers = () => {
-  globalAuthCache.subscribers.forEach(callback => {
-    callback(globalAuthCache.user, globalAuthCache.loading);
+const notifyAll = () => {
+  globalAuth.subscribers.forEach(callback => {
+    callback(globalAuth.user, globalAuth.loading);
   });
 };
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User | undefined>(globalAuthCache.user);
-  const [loading, setLoading] = useState<boolean>(globalAuthCache.loading);
+  const [user, setUser] = useState<User | undefined>(globalAuth.user);
+  const [loading, setLoading] = useState<boolean>(globalAuth.loading);
   const mountedRef = useRef(true);
+  const initialRender = useRef(true);
 
-  // ⭐⭐ FETCH USER CON CACHE OBLIGATORIO
+  // ⭐⭐ FETCH USER - Cache extremo
   const fetchUser = async (force = false): Promise<User | undefined> => {
-    const now = Date.now();
-    
-    // ⭐ USAR CACHE si está fresco y no es force
-    if (!force && 
-        globalAuthCache.user !== undefined && 
-        (now - globalAuthCache.lastFetch < CACHE_DURATION)) {
-      console.log("⚡⚡⚡ CACHE HIT - Usando datos cacheados");
-      return globalAuthCache.user;
+    // ⭐ SI YA ESTÁ INICIALIZADO Y NO ES FORCE, NUNCA LLAMAR
+    if (globalAuth.initialized && !force) {
+      console.log("🚫 CACHE TOTAL - No llamar, ya inicializado");
+      return globalAuth.user;
     }
 
-    // ⭐ REUTILIZAR PROMISE si existe
-    if (globalAuthCache.promise && !force) {
+    // ⭐ REUTILIZAR PROMISE SI EXISTE
+    if (globalAuth.promise) {
       console.log("⚡ Reutilizando promise existente");
-      return globalAuthCache.promise;
+      return globalAuth.promise;
     }
 
-    console.log("🌐 Haciendo llamada REAL a /auth/me");
-    globalAuthCache.loading = true;
-    globalAuthCache.lastFetch = now;
-    notifySubscribers();
+    console.log("🌐 🔥 LLAMADA INICIAL a /auth/me");
+    globalAuth.loading = true;
+    globalAuth.initialized = true;
+    notifyAll();
 
-    globalAuthCache.promise = (async () => {
+    globalAuth.promise = (async () => {
       try {
         const response = await fetch(`${API_URL}/auth/me`, {
           credentials: "include",
-          headers: {
-            'Cache-Control': 'no-cache',
-            'Pragma': 'no-cache'
-          }
         });
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
 
         const data = await response.json();
         const userData = data.user || undefined;
 
-        globalAuthCache.user = userData;
-        globalAuthCache.loading = false;
-        notifySubscribers();
+        globalAuth.user = userData;
+        globalAuth.loading = false;
+        notifyAll();
 
-        console.log("✅ Auth actualizado:", userData ? userData.email : "null");
+        console.log("✅ Auth inicializado:", userData ? userData.email : "null");
         return userData;
       } catch (error) {
         console.error("💥 Error en auth:", error);
-        globalAuthCache.user = undefined;
-        globalAuthCache.loading = false;
-        notifySubscribers();
+        globalAuth.user = undefined;
+        globalAuth.loading = false;
+        notifyAll();
         return undefined;
       } finally {
-        // Mantener la promise por 2 segundos para reutilización
-        setTimeout(() => {
-          globalAuthCache.promise = null;
-        }, 2000);
+        globalAuth.promise = null;
       }
     })();
 
-    return globalAuthCache.promise;
+    return globalAuth.promise;
   };
 
   const logout = async () => {
     try {
       console.log("🔍 Iniciando logout...");
       
-      // Limpiar cache inmediatamente
-      globalAuthCache.user = undefined;
-      globalAuthCache.promise = null;
-      globalAuthCache.lastFetch = 0;
-      notifySubscribers();
+      // Resetear completamente
+      globalAuth.user = undefined;
+      globalAuth.loading = true;
+      globalAuth.initialized = false;
+      globalAuth.promise = null;
+      notifyAll();
       
       await fetch(`${API_URL}/auth/logout`, {
         method: 'GET',
         credentials: 'include',
       });
 
-      console.log("✅ Logout completado");
       window.location.href = '/';
     } catch (error) {
       console.error('❌ Error en logout:', error);
-      globalAuthCache.user = undefined;
-      notifySubscribers();
+      globalAuth.user = undefined;
+      globalAuth.initialized = false;
+      notifyAll();
       window.location.href = '/';
     }
   };
 
-  // ⭐⭐ EFFECT - Suscripción al cache global
+  // ⭐⭐ EFFECT - Una sola ejecución
   useEffect(() => {
+    if (!initialRender.current) return;
+    initialRender.current = false;
+
     mountedRef.current = true;
 
-    const handleAuthUpdate = (newUser: User | undefined, newLoading: boolean) => {
+    const handleUpdate = (newUser: User | undefined, newLoading: boolean) => {
       if (mountedRef.current) {
         setUser(newUser);
         setLoading(newLoading);
       }
     };
 
-    // Suscribirse a updates
-    globalAuthCache.subscribers.add(handleAuthUpdate);
+    globalAuth.subscribers.add(handleUpdate);
 
-    // ⭐⭐ HACER SOLO UNA LLAMADA INICIAL si el cache está vacío
-    const now = Date.now();
-    if (globalAuthCache.user === undefined && 
-        (now - globalAuthCache.lastFetch > CACHE_DURATION || globalAuthCache.lastFetch === 0)) {
-      console.log("🎯 Inicializando auth...");
+    // ⭐⭐ SOLO LLAMAR SI NO ESTÁ INICIALIZADO
+    if (!globalAuth.initialized) {
+      console.log("🎯 AuthProvider - Llamada inicial");
       fetchUser();
     } else {
-      console.log("🎯 Usando cache existente");
-      // Ya tenemos datos, solo actualizar el estado local
-      setUser(globalAuthCache.user);
-      setLoading(globalAuthCache.loading);
+      console.log("🎯 AuthProvider - Usando cache existente");
+      setUser(globalAuth.user);
+      setLoading(globalAuth.loading);
     }
 
     return () => {
       mountedRef.current = false;
-      globalAuthCache.subscribers.delete(handleAuthUpdate);
+      globalAuth.subscribers.delete(handleUpdate);
     };
   }, []);
 
