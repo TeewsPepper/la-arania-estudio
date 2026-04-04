@@ -2,7 +2,7 @@ import {  Response } from "express";
 import { AuthRequest } from "../types"; // 👈 Importamos el tipo
 import Reserva from "../models/Reserva";
 import { isReservaDisponible } from "../utils/isReservaDisponible";
-
+import { enviarNotificacionReserva } from "../services/emailService";
 import { Types } from "mongoose";
 
 // GET /reservas
@@ -64,12 +64,14 @@ export const createReserva = async (req: AuthRequest, res: Response) => {
       pagada: false,
     });
 
+    await enviarNotificacionReserva(nuevaReserva, req.user);
+
     res.status(201).json(nuevaReserva);
   } catch (error) {
     console.error("Error al crear reserva:", error);
     res.status(500).json({ error: "Error al crear reserva" });
   }
-};
+}
 
 // PUT /reservas/:id
 export const updateReserva = async (req: AuthRequest, res: Response) => {
