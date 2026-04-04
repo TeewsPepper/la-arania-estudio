@@ -64,14 +64,18 @@ export const createReserva = async (req: AuthRequest, res: Response) => {
       pagada: false,
     });
 
-    await enviarNotificacionReserva(nuevaReserva, req.user);
+    // 🔔 Enviar notificación al admin (en segundo plano, SIN AWAIT)
+    enviarNotificacionReserva(nuevaReserva, req.user).catch(err => {
+      console.error("❌ Error al enviar notificación (no bloqueante):", err);
+    });
 
+    // Responder inmediatamente al frontend
     res.status(201).json(nuevaReserva);
   } catch (error) {
     console.error("Error al crear reserva:", error);
     res.status(500).json({ error: "Error al crear reserva" });
   }
-}
+};
 
 // PUT /reservas/:id
 export const updateReserva = async (req: AuthRequest, res: Response) => {
