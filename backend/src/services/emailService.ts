@@ -5,16 +5,13 @@ console.log("📧 [INICIO] Cargando emailService...");
 // Configuración del transporter para Zoho
 // Probamos primero con puerto 587 (TLS) que suele estar más abierto
 const transporter = nodemailer.createTransport({
-    host: 'smtp.zoho.eu',
-    port: 587,           // Puerto TLS
-    secure: false,       // false para TLS en puerto 587
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
     auth: {
-        user: process.env.ZOHO_EMAIL,
-        pass: process.env.ZOHO_PASSWORD
-    },
-    connectionTimeout: 15000,  // 15 segundos
-    greetingTimeout: 15000,
-    socketTimeout: 15000
+        user: 'gomez.pepper@gmail.com',
+        pass: process.env.GMAIL_APP_PASSWORD
+    }
 });
 
 console.log("📧 [INICIO] Transporter configurado con:");
