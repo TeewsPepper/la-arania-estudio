@@ -65,6 +65,7 @@ export const createReserva = async (req: AuthRequest, res: Response) => {
     });
 
     // 🔔 Enviar notificación al admin (en segundo plano, SIN AWAIT)
+    
     enviarNotificacionReserva(nuevaReserva, req.user).catch(err => {
       console.error("❌ Error al enviar notificación (no bloqueante):", err);
     });

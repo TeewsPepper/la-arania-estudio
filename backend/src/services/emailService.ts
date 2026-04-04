@@ -11,6 +11,7 @@ const transporter = nodemailer.createTransport({
 });
 
 export const enviarNotificacionReserva = async (reserva: any, usuario: any) => {
+    console.log("📧 enviarNotificacionReserva fue llamada"); // 👈 LOG NUEVO
     const adminEmail = process.env.ADMIN_EMAIL || 'admin@araniauy.com';
     
     const fechaFormateada = new Date(reserva.fecha).toLocaleDateString('es-ES');
