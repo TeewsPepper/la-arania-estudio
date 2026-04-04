@@ -1,5 +1,6 @@
 import nodemailer from 'nodemailer';
 
+console.log("📧 Configurando transporter para Zoho...");
 const transporter = nodemailer.createTransport({
     host: 'smtp.zoho.com',   
     port: 465,
@@ -12,8 +13,8 @@ const transporter = nodemailer.createTransport({
 
 export const enviarNotificacionReserva = async (reserva: any, usuario: any) => {
     console.log("📧 enviarNotificacionReserva fue llamada"); // 👈 LOG NUEVO
-    const adminEmail = process.env.ADMIN_EMAIL || 'admin@araniauy.com';
     
+    const adminEmail = process.env.ADMIN_EMAIL || process.env.ZOHO_EMAIL;
     const fechaFormateada = new Date(reserva.fecha).toLocaleDateString('es-ES');
     
     const mensajeHtml = `
