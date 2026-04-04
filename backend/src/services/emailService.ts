@@ -5,9 +5,9 @@ console.log("📧 [INICIO] Cargando emailService...");
 // Configuración del transporter para Zoho
 // Probamos primero con puerto 587 (TLS) que suele estar más abierto
 const transporter = nodemailer.createTransport({
-    host: 'smtp.zoho.com',
-    port: 465,           // Puerto TLS
-    secure: true,       // false para TLS en puerto 587
+    host: 'smtp.zoho.eu',
+    port: 587,           // Puerto TLS
+    secure: false,       // false para TLS en puerto 587
     auth: {
         user: process.env.ZOHO_EMAIL,
         pass: process.env.ZOHO_PASSWORD
