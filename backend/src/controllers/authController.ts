@@ -1,6 +1,7 @@
 // backend/src/controllers/authController.ts
 import { Profile } from "passport-google-oauth20";
 import { Request, Response } from "express";
+import { enviarNotificacionNuevoUsuario } from "../services/emailService";
 import User, { IUserDocument } from "../models/User";
 
 
@@ -32,6 +33,11 @@ export const findOrCreateUser = async (profile: Profile): Promise<IUserDocument>
     email,
     avatar,
     role: isAdmin ? "admin" : "user",
+  });
+
+  // 🔔 ENVIAR NOTIFICACIÓN AL ADMIN (en segundo plano, no bloqueante)
+  enviarNotificacionNuevoUsuario(user).catch(err => {
+    console.error("❌ Error al enviar notificación de nuevo usuario:", err);
   });
 
   return user;
