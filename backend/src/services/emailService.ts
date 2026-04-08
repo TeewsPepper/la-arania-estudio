@@ -43,14 +43,18 @@ export const enviarNotificacionReserva = async (reserva: any, usuario: any) => {
  */
 import { Resend } from "resend";
 import type { IReservaDocument } from "../models/Reserva";
-import type { IUserDocument } from "../models/User";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-export const enviarNotificacionReserva = async (reserva: IReservaDocument, usuario: IUserDocument) => {
+
+
+// Enviar notificación de reserva (usa solo lo que viene en req.user)
+export const enviarNotificacionReserva = async (
+  reserva: IReservaDocument, 
+  usuario: { id: string; email: string; name: string; role: string }
+) => {
   const adminEmail = process.env.ADMIN_EMAIL || "gomez.pepper@gmail.com";
 
-  // Convertir fecha de "dd-mm-yyyy" a "yyyy-mm-dd" para que JavaScript la entienda
   const [dia, mes, ano] = reserva.fecha.split("-");
   const fechaParseada = new Date(`${ano}-${mes}-${dia}`);
   const fechaFormateada = fechaParseada.toLocaleDateString("es-ES");
@@ -69,8 +73,6 @@ export const enviarNotificacionReserva = async (reserva: IReservaDocument, usuar
         <p><strong>Fecha:</strong> ${fechaFormateada}</p>
         <p><strong>Hora:</strong> ${reserva.horaInicio} - ${reserva.horaFin}</p>
         <p>📋 <a href="${dashboardUrl}">Ver dashboard</a></p>
-        <br>
-        <p><small>Este es un mensaje automático de La Araña Estudio.</small></p>
       `,
     });
 
@@ -84,11 +86,13 @@ export const enviarNotificacionReserva = async (reserva: IReservaDocument, usuar
   }
 };
 
-// Función para notificar cuando se registra un nuevo usuario
+// Para el nuevo usuario, seguimos usando IUserDocument (porque viene de User.create)
+import type { IUserDocument } from "../models/User";
+
 export const enviarNotificacionNuevoUsuario = async (usuario: IUserDocument) => {
   const adminEmail = process.env.ADMIN_EMAIL || "gomez.pepper@gmail.com";
   
-  const fechaRegistro = new Date(usuario.createdAt).toLocaleString("es-ES", {
+  const fechaRegistro = new Date().toLocaleString("es-ES", {
     timeZone: "America/Montevideo"
   });
   
@@ -105,8 +109,6 @@ export const enviarNotificacionNuevoUsuario = async (usuario: IUserDocument) => 
         <p><strong>Fecha de registro:</strong> ${fechaRegistro}</p>
         <br>
         <p>📋 <a href="https://araniauy.com/admin">Ver dashboard</a></p>
-        <br>
-        <p><small>Este es un mensaje automático. Responderás personalmente a este nuevo usuario.</small></p>
       `
     });
 
