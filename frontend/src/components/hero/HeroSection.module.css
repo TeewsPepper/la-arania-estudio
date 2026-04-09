@@ -13,7 +13,9 @@
   padding: 1rem;
   box-sizing: border-box;
 }
-
+.googleButton {
+  background-color: transparent;
+}
 
 
 .textContainer {
@@ -25,6 +27,7 @@
   height: 50%;
   padding: 1rem;
   box-sizing: border-box;
+  line-height: 1.5;
 }
 
 .title {

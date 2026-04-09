@@ -4,7 +4,8 @@
 Aplicación web para un estudio de grabación y sala de ensayo musical. Permite:  
 - Registro e inicio de sesión de usuarios.  
 - Acceso a promociones y servicios.  
-- Dashboard de administrador para gestionar reservas.  
+- Dashboard de administrador para gestionar reservas.
+- Dashboard/Perfil de usuario para ver sus horas acumuladas y reservas hechas.  
 - Diseño underground/punk/indie con React, Vite y CSS Modules.  
 - Validación y sanitización de formularios en tiempo real.
 
@@ -35,7 +36,7 @@ Aplicación web para un estudio de grabación y sala de ensayo musical. Permite:
 
 ### Dashboard Admin
 - Acceso exclusivo para usuarios con rol `admin`.  
-- Interfaz inicial con datos hardcodeados (preparada para integración backend).  
+- Interfaz inicial con datos obtenidos desde Mongo Atlas.  
  
 
 ## Instrucciones para ejecutar

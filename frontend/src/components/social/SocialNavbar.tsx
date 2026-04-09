@@ -1,4 +1,4 @@
-import { FaFacebookF, FaInstagram, FaYoutube } from "react-icons/fa";
+import { FaFacebookF, /* FaInstagram, */ FaYoutube } from "react-icons/fa";
 import styles from "./SocialNavbar.module.css";
 
 export default function SocialNavbar() {
@@ -9,7 +9,7 @@ export default function SocialNavbar() {
       {/* Correos de contacto */}
       <div className={styles.contact}>
         <ul className={styles.emailList}>
-          <li>
+          {/* <li>
             <span className={styles.label}>Información General:</span>
             <a
               className={styles.link}
@@ -28,7 +28,7 @@ export default function SocialNavbar() {
             >
               reservas@araniauy.com
             </a>
-          </li>
+          </li> */}
           <li>
             <span className={styles.label}>Administración:</span>
             <a
@@ -59,7 +59,7 @@ export default function SocialNavbar() {
               <FaFacebookF />
             </a>
           </li>
-          <li>
+          {/* <li>
             <a
               href="https://www.instagram.com/jose_noel_gomez/"
               target="_blank"
@@ -69,7 +69,7 @@ export default function SocialNavbar() {
             >
               <FaInstagram />
             </a>
-          </li>
+          </li> */}
           <li>
             <a
               href="https://www.youtube.com/@TejiendoLaRed895"

@@ -16,7 +16,7 @@ const Footer = () => {
         </p>
 
         {/* Credits */}
-        <p className={styles.credits}>
+        {/* <p className={styles.credits}>
           Powered by{" "}
           <a
             href="https://teewspepper.com"
@@ -26,7 +26,7 @@ const Footer = () => {
           >
             TeewsPepper
           </a>
-        </p>
+        </p> */}
       </div>
     </footer>
   );
