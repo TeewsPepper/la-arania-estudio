@@ -1,6 +1,0 @@
-# robots.txt para La Araña Estudio
-User-agent: *
-Disallow: /login
-
-# Sitemap
-Sitemap: https://araniauy.com/sitemap.xml
