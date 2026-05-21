@@ -31,17 +31,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const fetchUser = async (force = false): Promise<User | undefined> => {
     // ⭐ SI YA ESTÁ INICIALIZADO Y NO ES FORCE, NUNCA LLAMAR
     if (globalAuth.initialized && !force) {
-      console.log("🚫 CACHE TOTAL - No llamar, ya inicializado");
+      
       return globalAuth.user;
     }
 
     // ⭐ REUTILIZAR PROMISE SI EXISTE
     if (globalAuth.promise) {
-      console.log("⚡ Reutilizando promise existente");
       return globalAuth.promise;
     }
 
-    console.log("🌐 🔥 LLAMADA INICIAL a /auth/me");
+    
     globalAuth.loading = true;
     globalAuth.initialized = true;
     notifyAll();
@@ -63,10 +62,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         globalAuth.loading = false;
         notifyAll();
 
-        console.log("✅ Auth inicializado:", userData ? userData.email : "null");
         return userData;
       } catch (error) {
-        console.error("💥 Error en auth:", error);
+        
         globalAuth.user = undefined;
         globalAuth.loading = false;
         notifyAll();
@@ -123,10 +121,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     // ⭐⭐ SOLO LLAMAR SI NO ESTÁ INICIALIZADO
     if (!globalAuth.initialized) {
-      console.log("🎯 AuthProvider - Llamada inicial");
+      
       fetchUser();
     } else {
-      console.log("🎯 AuthProvider - Usando cache existente");
       setUser(globalAuth.user);
       setLoading(globalAuth.loading);
     }

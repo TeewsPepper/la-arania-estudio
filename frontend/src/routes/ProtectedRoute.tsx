@@ -1,6 +1,6 @@
 
 import type { ReactNode } from "react";
-import { useEffect } from "react";
+
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 
@@ -10,15 +10,10 @@ interface ProtectedRouteProps {
 }
 
 export function ProtectedRoute({ children, adminOnly = false }: ProtectedRouteProps) {
-  const { user, loading } = useAuth(); // ✅ incluimos loading
-
-   // ⭐ TEMPORAL: Debug de llamadas
-  useEffect(() => {
-    console.log("🛡️ ProtectedRoute montado - path:", window.location.pathname);
-  }, []);
+  const { user, loading } = useAuth(); 
 
   if (loading) {
-    return <p>Cargando usuario...</p>; // o spinner
+    return <p>Cargando usuario...</p>; 
   }
 
   if (!user) {

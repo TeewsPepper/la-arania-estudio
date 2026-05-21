@@ -14,5 +14,5 @@ export default function HomeCTA() {
     }
   };
 
-  return <CTAButton onClick={handleClick}>Hacé tu Reserva</CTAButton>;
+  return <CTAButton onClick={handleClick}>Hacer una Reserva</CTAButton>;
 }

@@ -15,6 +15,7 @@
 }
 .googleButton {
   background-color: transparent;
+  margin-bottom:2rem
 }
 
 
@@ -98,6 +99,8 @@
   .subtitle {
     font-size: .8rem;
   }
+  
+ 
 }
 
 /* @media (orientation: portrait) {

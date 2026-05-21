@@ -19,7 +19,7 @@ const HeroSection = () => {
   <img src="/google-logo.svg" alt="Google" className={styles.googleLogo} />
 </button> 
         <br />
-        O</h2>
+        O también podés</h2>
 
         {/* <p className={styles.subtitle}>
           Sala de ensayo y grabación en Montevideo para músicos y bandas.
