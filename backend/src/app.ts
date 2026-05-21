@@ -1,5 +1,6 @@
 
 import express from "express";
+import helmet from "helmet";
 import session from "express-session";
 import MongoStore from "connect-mongo";
 import passport from "passport";
@@ -12,6 +13,7 @@ import adminRoutes from "./routes/admin";
 import "./config/passport";
 
 const app = express();
+app.use(helmet());
 
 // Validar variables de entorno críticas
 const requiredEnvVars = ["MONGO_URI", "SESSION_SECRET", "FRONTEND_URL"];
