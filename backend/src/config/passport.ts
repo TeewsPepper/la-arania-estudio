@@ -42,7 +42,7 @@ passport.use(
         console.log(`✅ [Passport] Login exitoso: ${user.email}`);
         done(null, payload);
       } catch (err) {
-        console.error('❌ [Passport] Error en GoogleStrategy:', err);
+        console.error('❌ [Passport] Error en GoogleStrategy');
         done(err as Error, undefined);
       }
     }
@@ -93,7 +93,7 @@ passport.deserializeUser(async (id: string, done) => {
     console.log(`✅ [Passport] User deserialized: ${user.email}`);
     done(null, payload);
   } catch (err) {
-    console.error('❌ [Passport] Error en deserializeUser:', err);
+    console.error('❌ [Passport] Error en deserializeUser');
     done(err as Error, undefined);
   }
 });

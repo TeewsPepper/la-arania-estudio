@@ -1,4 +1,4 @@
-import type { IReservaDocument } from "../models/Reserva"; // 👈 ajusta el tipo según tu modelo
+import type { IReservaDocument } from "../models/Reserva"; 
 
 export function isReservaDisponible(
   reservas: IReservaDocument[],

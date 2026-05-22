@@ -29,7 +29,7 @@ export const getStats = async (req: Request, res: Response) => {
       todayReservations,
     });
   } catch (error) {
-    console.error("Error en /admin/stats:", error);
+    console.error("Error en /admin/stats");
     res.status(500).json({ error: "Error al obtener estadísticas" });
   }
 };
@@ -57,7 +57,7 @@ export const getReservations = async (req: Request, res: Response) => {
       total,
     });
   } catch (error) {
-    console.error("Error en /admin/reservations:", error);
+    console.error("Error en /admin/reservations");
     res.status(500).json({ error: "Error al obtener reservas" });
   }
 };
@@ -68,7 +68,7 @@ export const getUsers = async (req: Request, res: Response) => {
     const users = await User.find().select("-__v").sort({ createdAt: -1 });
     res.json(users);
   } catch (error) {
-    console.error("Error en /admin/users:", error);
+    console.error("Error en /admin/users");
     res.status(500).json({ error: "Error al obtener usuarios" });
   }
 };
@@ -105,7 +105,7 @@ export const confirmarPagoHoras = async (req: Request, res: Response) => {
       horasAcumuladas: user?.horasAcumuladas ?? 0,
     });
   } catch (error) {
-    console.error("Error confirmar-pago-horas:", error);
+    console.error("Error confirmar-pago-horas");
     res
       .status(500)
       .json({ error: "Error al confirmar pago y actualizar horas" });
@@ -133,7 +133,7 @@ export const updateReservationStatus = async (req: Request, res: Response) => {
 
     res.json(reservation);
   } catch (error) {
-    console.error("Error en PATCH /reservations/:id/status:", error);
+    console.error("Error en PATCH /reservations/:id/status");
     res.status(500).json({ error: "Error al actualizar reserva" });
   }
 };

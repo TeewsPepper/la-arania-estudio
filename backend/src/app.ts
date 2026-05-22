@@ -176,7 +176,7 @@ app.use(
     res: express.Response,
     _next: express.NextFunction
   ) => {
-    console.error("💥 Error:", err);
+    console.error("💥 Error");
     res.status(500).json({
       error: process.env.NODE_ENV === "production"
         ? "Error interno del servidor"

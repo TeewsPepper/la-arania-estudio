@@ -32,7 +32,6 @@ router.get(
   (req, res, next) => {
     passport.authenticate("google", { session: true }, (err, user, info) => {
       if (err) {
-        console.error('❌ Error en auth Google:', err);
         return res.redirect(`${process.env.FRONTEND_URL}/login?error=auth_failed`);
       }
       
@@ -43,7 +42,6 @@ router.get(
 
       req.login(user, (err) => {
         if (err) {
-          console.error('❌ Error en req.login:', err);
           return res.redirect(`${process.env.FRONTEND_URL}/login?error=session_error`);
         }
 
@@ -77,14 +75,13 @@ router.get("/logout", (req, res, next) => {
 
   req.logout((err) => {
     if (err) {
-      console.error('❌ Error en logout:', err);
       return next(err);
     }
     
     // Destruir sesión completamente
     req.session.destroy((destroyErr) => {
       if (destroyErr) {
-        console.error('❌ Error destruyendo sesión:', destroyErr);
+        console.error('❌ Error destruyendo sesión:');
       }
       
       // Limpiar cookie

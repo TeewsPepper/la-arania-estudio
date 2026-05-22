@@ -37,7 +37,7 @@ export const findOrCreateUser = async (profile: Profile): Promise<IUserDocument>
 
   // 🔔 ENVIAR NOTIFICACIÓN AL ADMIN (en segundo plano, no bloqueante)
   enviarNotificacionNuevoUsuario(user).catch(err => {
-    console.error("❌ Error al enviar notificación de nuevo usuario:", err);
+    console.error("❌ Error al enviar notificación de nuevo usuario");
   });
 
   return user;
