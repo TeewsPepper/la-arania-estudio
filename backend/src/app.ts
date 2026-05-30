@@ -13,7 +13,81 @@ import adminRoutes from "./routes/admin";
 import "./config/passport";
 
 const app = express();
-app.use(helmet());
+
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        // Mantén las directivas por defecto pero añade las necesarias
+        ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+        
+        // Permite scripts de Google y los inline necesarios
+        "script-src": [
+          "'self'",
+          "'unsafe-inline'",
+          "'unsafe-eval'",
+          "https://www.googletagmanager.com",
+          "https://maps.google.com",
+          "https://maps.googleapis.com",
+          "https://*.googleapis.com",
+          "https://*.gstatic.com"
+        ],
+        
+        // Permite estilos de Google Fonts e inline (necesario para React)
+        "style-src": [
+          "'self'",
+          "'unsafe-inline'",
+          "https://fonts.googleapis.com",
+          "https://*.googleapis.com"
+        ],
+        
+        // Permite fuentes de Google Fonts
+        "font-src": [
+          "'self'",
+          "https://fonts.gstatic.com",
+          "https://*.gstatic.com",
+          "data:"
+        ],
+        
+        // Permite imágenes de Google Maps y tiles
+        "img-src": [
+          "'self'",
+          "data:",
+          "blob:",
+          "https://*.googleapis.com",
+          "https://*.gstatic.com",
+          "https://*.google.com",
+          "https://*.googleusercontent.com"
+        ],
+        
+        // 🔑 CLAVE: Permite iframes de Google Maps
+        "frame-src": [
+          "'self'",
+          "https://www.google.com",
+          "https://maps.google.com",
+          "https://www.googletagmanager.com"
+        ],
+        
+        // Permite conexiones a APIs de Google
+        "connect-src": [
+          "'self'",
+          "https://*.googleapis.com",
+          "https://*.gstatic.com",
+          "https://www.google-analytics.com"
+        ],
+        
+        // Permite worker scripts
+        "worker-src": ["'self'", "blob:"],
+        
+        // Permite embebidos (por si acaso)
+        "frame-ancestors": ["'self'"]
+      }
+    },
+    // Desactiva estas políticas que pueden interferir con el iframe
+    crossOriginEmbedderPolicy: false,
+    crossOriginResourcePolicy: { policy: "cross-origin" }
+  })
+)
 
 // Validar variables de entorno críticas
 const requiredEnvVars = ["MONGO_URI", "SESSION_SECRET", "FRONTEND_URL"];
