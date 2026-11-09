@@ -1,8 +1,8 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import DatePicker, { registerLocale } from "react-datepicker";
-import {es} from "date-fns/locale/es";
+import { es } from "date-fns/locale/es";
 import "react-datepicker/dist/react-datepicker.css";
 import { API_URL } from "../../config/api";
 import { useReservas } from "../../hooks/useReservas";
@@ -18,11 +18,41 @@ registerLocale("es", es);
 
 export default function NuevaReserva() {
   const { addReserva, reservas } = useReservas();
+
   const [fecha, setFecha] = useState<Date | null>(null);
   const [horaInicio, setHoraInicio] = useState<Date | null>(null);
   const [horaFin, setHoraFin] = useState<Date | null>(null);
+
+  const [estadoReservas, setEstadoReservas] = useState<
+    "cargando" | "habilitadas" | "suspendidas" | "error"
+  >("cargando");
+
   const navigate = useNavigate();
   const isMobile = window.innerWidth <= 480;
+
+  // Consultar si las reservas están habilitadas
+  useEffect(() => {
+    const consultarConfiguracion = async () => {
+      try {
+        const res = await fetch(`${API_URL}/config/public`);
+
+        if (!res.ok) {
+          throw new Error("No se pudo consultar la configuración");
+        }
+
+        const data: { reservasHabilitadas: boolean } = await res.json();
+
+        setEstadoReservas(
+          data.reservasHabilitadas ? "habilitadas" : "suspendidas"
+        );
+      } catch (error) {
+        console.error("Error al consultar configuración:", error);
+        setEstadoReservas("error");
+      }
+    };
+
+    consultarConfiguracion();
+  }, []);
 
   const handleReserva = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,8 +62,8 @@ export default function NuevaReserva() {
       return;
     }
 
-    const horaInicioStr = `${String(horaInicio.getHours()).padStart(2, '0')}:${String(horaInicio.getMinutes()).padStart(2, '0')}`;
-    const horaFinStr = `${String(horaFin.getHours()).padStart(2, '0')}:${String(horaFin.getMinutes()).padStart(2, '0')}`;
+    const horaInicioStr = `${String(horaInicio.getHours()).padStart(2, "0")}:${String(horaInicio.getMinutes()).padStart(2, "0")}`;
+    const horaFinStr = `${String(horaFin.getHours()).padStart(2, "0")}:${String(horaFin.getMinutes()).padStart(2, "0")}`;
 
     if (horaFin <= horaInicio) {
       toast.error("⚠️ La hora de fin debe ser posterior a la de inicio");
@@ -45,7 +75,12 @@ export default function NuevaReserva() {
     const yyyy = fecha.getFullYear();
     const fechaStr = `${dd}-${mm}-${yyyy}`;
 
-    const disponible = isReservaDisponible(reservas, fechaStr, horaInicioStr, horaFinStr);
+    const disponible = isReservaDisponible(
+      reservas,
+      fechaStr,
+      horaInicioStr,
+      horaFinStr
+    );
 
     if (!disponible) {
       toast.error("⛔ Ese horario se superpone con otra reserva. Elige otro.");
@@ -61,9 +96,9 @@ export default function NuevaReserva() {
           fecha: fechaStr,
           horaInicio: horaInicioStr,
           horaFin: horaFinStr,
-          status: 'pending',
-          pagada: false
-        })
+          status: "pending",
+          pagada: false,
+        }),
       });
 
       if (!res.ok) throw new Error("Error al crear reserva");
@@ -84,11 +119,30 @@ export default function NuevaReserva() {
   maxDate.setMonth(maxDate.getMonth() + 3);
 
   const minTime = (fechaSelected: Date | null): Date => {
-  const now = new Date();
-  if (!fechaSelected) return new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0);
-  if (fechaSelected.toDateString() === now.toDateString()) return now;
-  return new Date(fechaSelected.getFullYear(), fechaSelected.getMonth(), fechaSelected.getDate(), 0, 0);
-};
+    const now = new Date();
+
+    if (!fechaSelected) {
+      return new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate(),
+        0,
+        0
+      );
+    }
+
+    if (fechaSelected.toDateString() === now.toDateString()) {
+      return now;
+    }
+
+    return new Date(
+      fechaSelected.getFullYear(),
+      fechaSelected.getMonth(),
+      fechaSelected.getDate(),
+      0,
+      0
+    );
+  };
 
   const maxTime = new Date();
   maxTime.setHours(23, 45, 0, 0);
@@ -96,74 +150,95 @@ export default function NuevaReserva() {
   return (
     <section className={styles.section}>
       <h3>Hacer una nueva reserva</h3>
-      <form onSubmit={handleReserva} className={styles.form}>
-        <label>
-          Selecciona un día:
-          <DatePicker
-            selected={fecha}
-            onChange={(date: Date | null) => setFecha(date)}
-            dateFormat="dd-MM-yyyy"
-            placeholderText="Selecciona una fecha"
-            className="customDatepicker"
-            autoComplete="off"
-            shouldCloseOnSelect
-            withPortal={isMobile}
-            minDate={minDate}
-            maxDate={maxDate}
-            isClearable
-            showYearDropdown
-            scrollableYearDropdown
-            yearDropdownItemNumber={5}
-            locale="es"
-          />
-        </label>
 
-        <label>
-          Hora de inicio:
-          <DatePicker
-            selected={horaInicio}
-            onChange={(date: Date | null) => setHoraInicio(date)}
-            showTimeSelect
-            showTimeSelectOnly
-            timeIntervals={15}
-            timeCaption="Hora"
-            dateFormat="HH:mm"
-            locale="es"
-            placeholderText="Selecciona hora de inicio"
-            className="customDatepicker"
-            autoComplete="off"
-            shouldCloseOnSelect
-            withPortal={isMobile}
-            minTime={minTime(fecha)}
-            maxTime={maxTime}
-          />
-        </label>
+      {estadoReservas === "cargando" && (
+        <p>Consultando disponibilidad de reservas...</p>
+      )}
 
-        <label>
-          Hora de finalización:
-          <DatePicker
-            selected={horaFin}
-            onChange={(date: Date | null) => setHoraFin(date)}
-            showTimeSelect
-            showTimeSelectOnly
-            timeIntervals={15}
-            timeCaption="Hora"
-            dateFormat="HH:mm"
-            locale="es"
-            placeholderText="Selecciona hora de fin"
-            className="customDatepicker"
-            autoComplete="off"
-            shouldCloseOnSelect
-            withPortal={isMobile}
-            minTime={horaInicio || minTime(fecha)}
-            maxTime={maxTime}
-          />
-        </label>
+      {estadoReservas === "suspendidas" && (
+        <p>
+          Las reservas online están temporalmente suspendidas.
+          Disculpá las molestias. Pronto volveremos a recibir reservas.
+        </p>
+      )}
 
-        <button type="submit" className={styles.btn}>
-          Reservar
-        </button>
-      </form>
+      {estadoReservas === "error" && (
+        <p>
+          No podemos consultar el estado de las reservas en este momento.
+          Por favor, intentá nuevamente más tarde.
+        </p>
+      )}
+
+      {estadoReservas === "habilitadas" && (
+        <form onSubmit={handleReserva} className={styles.form}>
+          <label>
+            Selecciona un día:
+            <DatePicker
+              selected={fecha}
+              onChange={(date: Date | null) => setFecha(date)}
+              dateFormat="dd-MM-yyyy"
+              placeholderText="Selecciona una fecha"
+              className="customDatepicker"
+              autoComplete="off"
+              shouldCloseOnSelect
+              withPortal={isMobile}
+              minDate={minDate}
+              maxDate={maxDate}
+              isClearable
+              showYearDropdown
+              scrollableYearDropdown
+              yearDropdownItemNumber={5}
+              locale="es"
+            />
+          </label>
+
+          <label>
+            Hora de inicio:
+            <DatePicker
+              selected={horaInicio}
+              onChange={(date: Date | null) => setHoraInicio(date)}
+              showTimeSelect
+              showTimeSelectOnly
+              timeIntervals={15}
+              timeCaption="Hora"
+              dateFormat="HH:mm"
+              locale="es"
+              placeholderText="Selecciona hora de inicio"
+              className="customDatepicker"
+              autoComplete="off"
+              shouldCloseOnSelect
+              withPortal={isMobile}
+              minTime={minTime(fecha)}
+              maxTime={maxTime}
+            />
+          </label>
+
+          <label>
+            Hora de finalización:
+            <DatePicker
+              selected={horaFin}
+              onChange={(date: Date | null) => setHoraFin(date)}
+              showTimeSelect
+              showTimeSelectOnly
+              timeIntervals={15}
+              timeCaption="Hora"
+              dateFormat="HH:mm"
+              locale="es"
+              placeholderText="Selecciona hora de fin"
+              className="customDatepicker"
+              autoComplete="off"
+              shouldCloseOnSelect
+              withPortal={isMobile}
+              minTime={horaInicio || minTime(fecha)}
+              maxTime={maxTime}
+            />
+          </label>
+
+          <button type="submit" className={styles.btn}>
+            Reservar
+          </button>
+        </form>
+      )}
 
       <ToastContainer
         className="toast-center"

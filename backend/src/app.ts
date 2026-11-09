@@ -1,10 +1,9 @@
-
 import express from "express";
 import helmet from "helmet";
 import session from "express-session";
 import MongoStore from "connect-mongo";
 import passport from "passport";
-import rateLimit from 'express-rate-limit';
+import rateLimit from "express-rate-limit";
 import path from "path";
 
 import authRoutes from "./routes/authRoutes";
@@ -20,7 +19,7 @@ app.use(
       directives: {
         // Mantén las directivas por defecto pero añade las necesarias
         ...helmet.contentSecurityPolicy.getDefaultDirectives(),
-        
+
         // Permite scripts de Google y los inline necesarios
         "script-src": [
           "'self'",
@@ -30,25 +29,25 @@ app.use(
           "https://maps.google.com",
           "https://maps.googleapis.com",
           "https://*.googleapis.com",
-          "https://*.gstatic.com"
+          "https://*.gstatic.com",
         ],
-        
+
         // Permite estilos de Google Fonts e inline (necesario para React)
         "style-src": [
           "'self'",
           "'unsafe-inline'",
           "https://fonts.googleapis.com",
-          "https://*.googleapis.com"
+          "https://*.googleapis.com",
         ],
-        
+
         // Permite fuentes de Google Fonts
         "font-src": [
           "'self'",
           "https://fonts.gstatic.com",
           "https://*.gstatic.com",
-          "data:"
+          "data:",
         ],
-        
+
         // Permite imágenes de Google Maps y tiles
         "img-src": [
           "'self'",
@@ -57,37 +56,37 @@ app.use(
           "https://*.googleapis.com",
           "https://*.gstatic.com",
           "https://*.google.com",
-          "https://*.googleusercontent.com"
+          "https://*.googleusercontent.com",
         ],
-        
+
         // 🔑 CLAVE: Permite iframes de Google Maps
         "frame-src": [
           "'self'",
           "https://www.google.com",
           "https://maps.google.com",
-          "https://www.googletagmanager.com"
+          "https://www.googletagmanager.com",
         ],
-        
+
         // Permite conexiones a APIs de Google
         "connect-src": [
           "'self'",
           "https://*.googleapis.com",
           "https://*.gstatic.com",
-          "https://www.google-analytics.com"
+          "https://www.google-analytics.com",
         ],
-        
+
         // Permite worker scripts
         "worker-src": ["'self'", "blob:"],
-        
+
         // Permite embebidos (por si acaso)
-        "frame-ancestors": ["'self'"]
-      }
+        "frame-ancestors": ["'self'"],
+      },
     },
     // Desactiva estas políticas que pueden interferir con el iframe
     crossOriginEmbedderPolicy: false,
-    crossOriginResourcePolicy: { policy: "cross-origin" }
-  })
-)
+    crossOriginResourcePolicy: { policy: "cross-origin" },
+  }),
+);
 
 // Validar variables de entorno críticas
 const requiredEnvVars = ["MONGO_URI", "SESSION_SECRET", "FRONTEND_URL"];
@@ -120,30 +119,39 @@ app.use(
       maxAge: 24 * 60 * 60 * 1000,
       path: "/",
     },
-  })
+  }),
 );
 
 app.use(passport.initialize());
 app.use(passport.session());
 
 // ⭐⭐ BLOQUEO DE BOTS - AGREGADO (URGENTE)
-app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
-  const blockedPaths = ['/.env', '/administrator', '/admin/.env', '/auth.json', '/.git'];
-  
-  if (blockedPaths.some(path => req.path.includes(path))) {
-    console.log(`🚨 BLOQUEO BOT: ${req.ip} - ${req.method} ${req.path}`);
-    return res.status(404).json({ error: 'Not found' });
-  }
-  
-  next();
-});
+app.use(
+  (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    const blockedPaths = [
+      "/.env",
+      "/administrator",
+      "/admin/.env",
+      "/auth.json",
+      "/.git",
+    ];
+
+    if (blockedPaths.some((path) => req.path.includes(path))) {
+      console.log(`🚨 BLOQUEO BOT: ${req.ip} - ${req.method} ${req.path}`);
+      return res.status(404).json({ error: "Not found" });
+    }
+
+    next();
+  },
+);
 
 // ⭐⭐ RATE LIMITING GLOBAL - AGREGADO
 const globalLimiter = rateLimit({
   windowMs: 1 * 60 * 1000,
   max: 100,
-  message: { error: 'Demasiadas solicitudes' },
-  skip: (req: express.Request) => req.path === '/health' || req.path === '/ping'
+  message: { error: "Demasiadas solicitudes" },
+  skip: (req: express.Request) =>
+    req.path === "/health" || req.path === "/ping",
 });
 app.use(globalLimiter);
 
@@ -151,12 +159,16 @@ app.use(globalLimiter);
 const authMeLimiter = rateLimit({
   windowMs: 1 * 60 * 1000, // 1 minuto
   max: 10, // ⭐ AUMENTADO a 10 (5 era muy estricto)
-  message: { error: 'Demasiadas verificaciones de autenticación' },
-  skip: (req: express.Request) => req.path !== '/auth/me',
+  message: { error: "Demasiadas verificaciones de autenticación" },
+  skip: (req: express.Request) => req.path !== "/auth/me",
   handler: (req, res) => {
-    console.warn(`🚨 RATE LIMIT EXCEDIDO: ${req.ip} para /auth/me - Bloqueando`);
-    res.status(429).json({ error: 'Demasiadas verificaciones de autenticación' });
-  }
+    console.warn(
+      `🚨 RATE LIMIT EXCEDIDO: ${req.ip} para /auth/me - Bloqueando`,
+    );
+    res
+      .status(429)
+      .json({ error: "Demasiadas verificaciones de autenticación" });
+  },
 });
 
 // ⭐⭐ APPLICAR RATE LIMITING ANTES DE LAS RUTAS - CORREGIDO
@@ -165,34 +177,55 @@ app.use("/auth/me", authMeLimiter);
 // 🔍 MIDDLEWARE DE DIAGNÓSTICO SIMPLIFICADO - CORREGIDO
 let activeRequests = 0;
 
-app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
-  activeRequests++;
-  const requestId = Math.random().toString(36).substring(2, 8);
-  (req as any).requestId = requestId;
-  
-  // Solo loguear rutas importantes para no saturar
-  if (req.path.startsWith('/auth') || req.path.startsWith('/admin') || req.path.includes('.env')) {
-    console.log(`🚀 [${requestId}] ${req.method} ${req.path} | Activos: ${activeRequests}`);
-  }
-  
-  const startTime = Date.now();
-  
-  res.on('finish', () => {
-    const duration = Date.now() - startTime;
-    // ⭐⭐ CORRECCIÓN: Prevenir underflow
-    activeRequests = Math.max(0, activeRequests - 1);
-    if (req.path.startsWith('/auth') || req.path.startsWith('/admin') || req.path.includes('.env')) {
-      console.log(`✅ [${requestId}] ${req.method} ${req.path} | ${duration}ms | Activos: ${activeRequests}`);
+app.use(
+  (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    activeRequests++;
+    const requestId = Math.random().toString(36).substring(2, 8);
+    (req as any).requestId = requestId;
+
+    // Solo loguear rutas importantes para no saturar
+    if (
+      req.path.startsWith("/auth") ||
+      req.path.startsWith("/admin") ||
+      req.path.includes(".env")
+    ) {
+      console.log(
+        `🚀 [${requestId}] ${req.method} ${req.path} | Activos: ${activeRequests}`,
+      );
     }
-  });
-  
-  next();
-});
+
+    const startTime = Date.now();
+
+    res.on("finish", () => {
+      const duration = Date.now() - startTime;
+      // ⭐⭐ CORRECCIÓN: Prevenir underflow
+      activeRequests = Math.max(0, activeRequests - 1);
+      if (
+        req.path.startsWith("/auth") ||
+        req.path.startsWith("/admin") ||
+        req.path.includes(".env")
+      ) {
+        console.log(
+          `✅ [${requestId}] ${req.method} ${req.path} | ${duration}ms | Activos: ${activeRequests}`,
+        );
+      }
+    });
+
+    next();
+  },
+);
 
 // 🚀 RUTAS PRINCIPALES
 app.use("/auth", authRoutes);
 app.use("/reservas", reservasRoutes);
 app.use("/admin", adminRoutes);
+
+// Configuración pública del sitio
+app.get("/config/public", (_req, res) => {
+  res.json({
+    reservasHabilitadas: process.env.RESERVAS_HABILITADAS !== "false",
+  });
+});
 
 // Health checks
 app.get("/health", (_req: express.Request, res: express.Response) => {
@@ -217,28 +250,37 @@ app.get("/test", (_req: express.Request, res: express.Response) => {
 if (process.env.NODE_ENV === "production") {
   const frontendDist = path.join(__dirname, "../dist");
   app.use(express.static(frontendDist));
-  
-  app.get("*", (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    // Si es una ruta de API, pasar al siguiente middleware (404)
-    if (req.path.startsWith('/api/') || 
-        req.path.startsWith('/auth/') || 
-        req.path.startsWith('/reservas/') || 
-        req.path.startsWith('/admin/') ||
-        req.path.startsWith('/test') ||
-        req.path.startsWith('/health') ||
-        req.path.startsWith('/ping')) {
-      return next();
-    }
-    
-    res.sendFile(path.join(frontendDist, "index.html"));
-  });
+
+  app.get(
+    "*",
+    (
+      req: express.Request,
+      res: express.Response,
+      next: express.NextFunction,
+    ) => {
+      // Si es una ruta de API, pasar al siguiente middleware (404)
+      if (
+        req.path.startsWith("/api/") ||
+        req.path.startsWith("/auth/") ||
+        req.path.startsWith("/reservas/") ||
+        req.path.startsWith("/admin/") ||
+        req.path.startsWith("/test") ||
+        req.path.startsWith("/health") ||
+        req.path.startsWith("/ping")
+      ) {
+        return next();
+      }
+
+      res.sendFile(path.join(frontendDist, "index.html"));
+    },
+  );
 }
 
 // Manejo de rutas no encontradas
 app.use((req: express.Request, res: express.Response) => {
-  res.status(404).json({ 
-    error: "Ruta no encontrada", 
-    path: req.originalUrl 
+  res.status(404).json({
+    error: "Ruta no encontrada",
+    path: req.originalUrl,
   });
 });
 
@@ -248,15 +290,16 @@ app.use(
     err: Error,
     req: express.Request,
     res: express.Response,
-    _next: express.NextFunction
+    _next: express.NextFunction,
   ) => {
     console.error("💥 Error");
     res.status(500).json({
-      error: process.env.NODE_ENV === "production"
-        ? "Error interno del servidor"
-        : err.message,
+      error:
+        process.env.NODE_ENV === "production"
+          ? "Error interno del servidor"
+          : err.message,
     });
-  }
+  },
 );
 
 export default app;

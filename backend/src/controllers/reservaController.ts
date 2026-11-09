@@ -1,4 +1,4 @@
-import {  Response } from "express";
+import { Response } from "express";
 import { AuthRequest } from "../types"; // 👈 Importamos el tipo
 import Reserva from "../models/Reserva";
 import { isReservaDisponible } from "../utils/isReservaDisponible";
@@ -8,13 +8,15 @@ import { Types } from "mongoose";
 // GET /reservas
 export const getReservas = async (req: AuthRequest, res: Response) => {
   try {
-    const user = req.user; 
+    const user = req.user;
     if (!user) {
       return res.status(401).json({ error: "No autenticado" });
     }
 
-    const reservas = await Reserva.find({ userId: user.id })
-      .sort({ fecha: -1, horaInicio: -1 });
+    const reservas = await Reserva.find({ userId: user.id }).sort({
+      fecha: -1,
+      horaInicio: -1,
+    });
 
     res.json({
       reservas,
@@ -33,6 +35,12 @@ export const createReserva = async (req: AuthRequest, res: Response) => {
       return res.status(401).json({ error: "No autenticado" });
     }
 
+    if (process.env.RESERVAS_HABILITADAS === "false") {
+      return res.status(503).json({
+        error: "Las reservas online están temporalmente suspendidas.",
+      });
+    }
+
     const { fecha, horaInicio, horaFin } = req.body;
 
     if (!fecha || !horaInicio || !horaFin) {
@@ -47,7 +55,7 @@ export const createReserva = async (req: AuthRequest, res: Response) => {
       reservasDelDia,
       fecha,
       horaInicio,
-      horaFin
+      horaFin,
     );
 
     if (!disponible) {
@@ -65,8 +73,8 @@ export const createReserva = async (req: AuthRequest, res: Response) => {
     });
 
     // 🔔 Enviar notificación al admin (en segundo plano, SIN AWAIT)
-    
-    enviarNotificacionReserva(nuevaReserva, req.user).catch(err => {
+
+    enviarNotificacionReserva(nuevaReserva, req.user).catch((err) => {
       console.error("❌ Error al enviar notificación (no bloqueante)");
     });
 
@@ -88,9 +96,9 @@ export const updateReserva = async (req: AuthRequest, res: Response) => {
     const { fecha, horaInicio, horaFin } = req.body;
 
     const reserva = await Reserva.findOneAndUpdate(
-      { _id: req.params.id, userId: req.user.id }, 
+      { _id: req.params.id, userId: req.user.id },
       { fecha, horaInicio, horaFin },
-      { new: true, runValidators: true }
+      { new: true, runValidators: true },
     );
 
     if (!reserva) {
@@ -109,7 +117,7 @@ export const marcarPagada = async (req: AuthRequest, res: Response) => {
     const reserva = await Reserva.findByIdAndUpdate(
       req.params.id,
       { pagada: true, status: "confirmed" }, // ajusta según tus estados
-      { new: true, runValidators: true }
+      { new: true, runValidators: true },
     ).populate("userId", "username email"); // 👈 clave para evitar undefined
 
     if (!reserva) {
@@ -132,7 +140,7 @@ export const deleteReserva = async (req: AuthRequest, res: Response) => {
 
     const reserva = await Reserva.findOneAndDelete({
       _id: req.params.id,
-      userId: new Types.ObjectId(req.user.id), 
+      userId: new Types.ObjectId(req.user.id),
     });
 
     if (!reserva) {
